@@ -21,6 +21,16 @@ const song = document.getElementById("birthdaySong");
 const songButton = document.getElementById("songButton");
 const surpriseButton = document.getElementById("surpriseButton");
 const typeText = document.getElementById("typeText");
+const gate = document.getElementById("gate");
+const mainContent = document.getElementById("mainContent");
+const gatePassword = document.getElementById("gatePassword");
+const gateButton = document.getElementById("gateButton");
+const gateError = document.getElementById("gateError");
+
+const SITE_PASSWORD = "venez23";
+
+mainContent.classList.add("locked");
+gatePassword.focus();
 
 photoFiles.forEach((src, i) => {
   const card = document.createElement("button");
@@ -157,6 +167,29 @@ function drawConfetti() {
 
   requestAnimationFrame(drawConfetti);
 }
+
+function unlockSite() {
+  gate.classList.add("hidden");
+  mainContent.classList.remove("locked");
+  mainContent.setAttribute("aria-hidden", "false");
+  gate.setAttribute("aria-hidden", "true");
+  gateError.textContent = "";
+  gatePassword.value = "";
+}
+
+function tryUnlock() {
+  if (gatePassword.value.trim() === SITE_PASSWORD) {
+    unlockSite();
+    return;
+  }
+
+  gateError.textContent = "Wrong password. Try again.";
+}
+
+gateButton.addEventListener("click", tryUnlock);
+gatePassword.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") tryUnlock();
+});
 
 drawConfetti();
 typeWriter();

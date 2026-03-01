@@ -9,7 +9,19 @@
 <body>
   <canvas id="confettiCanvas" aria-hidden="true"></canvas>
 
-  <main class="page">
+  <section id="gate" class="gate" role="dialog" aria-modal="true" aria-label="Enter password">
+    <div class="gate-card">
+      <p class="gate-tag">Jurassic Access</p>
+      <h2>Enter Secret Password</h2>
+      <p class="gate-hint">Only the birthday queen can unlock this mission.</p>
+      <label class="sr-only" for="gatePassword">Password</label>
+      <input id="gatePassword" class="gate-input" type="password" placeholder="Password" />
+      <button id="gateButton" class="btn gate-btn">Enter Dino World</button>
+      <p id="gateError" class="gate-error" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <main id="mainContent" class="page locked" aria-hidden="true">
     <section class="hero">
       <p class="tag">Jurassic Birthday Mission</p>
       <h1>Roarrr! Happy 23rd Birthday</h1>
