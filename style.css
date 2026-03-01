@@ -1,0 +1,251 @@
+:root {
+  --bg-1: #e7f6d5;
+  --bg-2: #b9e4a8;
+  --jungle-deep: #154734;
+  --jungle-mid: #2d6a4f;
+  --jungle-light: #5e9f61;
+  --sand: #f4e2b8;
+  --card: #fff9ec;
+  --text: #14261c;
+  --accent: #e07a2d;
+  --accent-dark: #7a4a14;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.45) 0%, transparent 30%),
+    radial-gradient(circle at 85% 15%, rgba(243, 226, 175, 0.7) 0%, transparent 35%),
+    linear-gradient(140deg, var(--bg-1), var(--bg-2));
+  overflow-x: hidden;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.25;
+}
+
+body::before {
+  left: -40px;
+  bottom: -50px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle at 20% 40%, var(--jungle-mid) 0%, transparent 60%);
+}
+
+body::after {
+  right: -60px;
+  top: -30px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle at 60% 50%, var(--jungle-light) 0%, transparent 65%);
+}
+
+#confettiCanvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page {
+  position: relative;
+  z-index: 2;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 16px 40px;
+}
+
+.hero {
+  text-align: center;
+  background: color-mix(in srgb, var(--card) 92%, white);
+  border: 2px solid rgba(45, 106, 79, 0.24);
+  border-radius: 20px;
+  padding: 28px 18px;
+  box-shadow: 0 12px 32px rgba(20, 65, 44, 0.2);
+}
+
+.tag {
+  margin: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: var(--jungle-mid);
+  font-weight: 700;
+}
+
+h1 {
+  margin: 10px 0 8px;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: var(--jungle-deep);
+}
+
+.subtitle {
+  min-height: 1.5em;
+  margin: 0 auto 18px;
+  max-width: 700px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 11px 18px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-alt {
+  background: var(--accent-dark);
+}
+
+.gallery-wrap {
+  margin-top: 22px;
+  background: color-mix(in srgb, var(--card) 88%, white);
+  border: 2px solid rgba(45, 106, 79, 0.22);
+  border-radius: 20px;
+  padding: 22px 18px;
+  box-shadow: 0 10px 30px rgba(20, 65, 44, 0.17);
+}
+
+.gallery-wrap h2 {
+  margin: 0;
+  text-align: center;
+  color: var(--jungle-deep);
+}
+
+.hint {
+  margin: 6px 0 14px;
+  text-align: center;
+  opacity: 0.78;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.photo-card {
+  border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  padding: 0;
+  cursor: pointer;
+  background: #edf4df;
+  box-shadow: 0 7px 18px rgba(20, 65, 44, 0.2);
+}
+
+.photo-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 26, 19, 0.8);
+  padding: 18px;
+  z-index: 10;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal img {
+  max-width: min(820px, 95vw);
+  max-height: 85vh;
+  border-radius: 16px;
+  border: 3px solid #fff;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.modal-close {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  border: none;
+  background: white;
+  color: #21372b;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.egg {
+  position: fixed;
+  width: 14px;
+  height: 18px;
+  border-radius: 50% 50% 45% 45%;
+  border: 2px solid #75654a;
+  background: var(--sand);
+  pointer-events: none;
+  z-index: 9;
+  animation: popUp 1000ms ease-out forwards;
+}
+
+.egg::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 4px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #9a865f;
+  box-shadow: 4px 5px 0 #9a865f;
+}
+
+@keyframes popUp {
+  to {
+    transform: translateY(-85px) rotate(10deg) scale(0.55);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero,
+  .gallery-wrap {
+    border-radius: 16px;
+  }
+
+  .photo-card img {
+    height: 190px;
+  }
+}
