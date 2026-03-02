@@ -111,8 +111,7 @@ function typeWriter() {
 }
 
 surpriseButton.addEventListener("click", () => {
-  burstConfetti();
-  spawnEggs(16);
+  megaSurprise();
 });
 
 document.addEventListener("click", (e) => {
@@ -121,14 +120,14 @@ document.addEventListener("click", (e) => {
   spawnEggs(4, e.clientX, e.clientY);
 });
 
-function spawnEggs(count, x = window.innerWidth / 2, y = window.innerHeight * 0.78) {
+function spawnEggs(count, x = window.innerWidth / 2, y = window.innerHeight * 0.78, spread = 70, life = 1000) {
   for (let i = 0; i < count; i++) {
     const egg = document.createElement("span");
     egg.className = "egg";
-    egg.style.left = `${x + (Math.random() - 0.5) * 70}px`;
+    egg.style.left = `${x + (Math.random() - 0.5) * spread}px`;
     egg.style.top = `${y + (Math.random() - 0.5) * 24}px`;
     document.body.appendChild(egg);
-    setTimeout(() => egg.remove(), 1000);
+    setTimeout(() => egg.remove(), life);
   }
 }
 
@@ -144,19 +143,52 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-function burstConfetti() {
+function burstConfetti(originX = canvas.width / 2, originY = canvas.height * 0.34, amount = 130) {
   const colors = ["#2d6a4f", "#95d5b2", "#e9c46a", "#f4a261", "#e76f51"];
-  for (let i = 0; i < 130; i++) {
+  for (let i = 0; i < amount; i++) {
     pieces.push({
-      x: canvas.width / 2,
-      y: canvas.height * 0.34,
-      vx: (Math.random() - 0.5) * 9,
-      vy: Math.random() * -6 - 2,
-      size: Math.random() * 7 + 3,
+      x: originX,
+      y: originY,
+      vx: (Math.random() - 0.5) * 10,
+      vy: Math.random() * -7 - 2.5,
+      size: Math.random() * 8 + 3,
       color: colors[Math.floor(Math.random() * colors.length)],
-      life: 110
+      life: 125
     });
   }
+}
+
+function shakeScreen(duration = 700) {
+  document.body.classList.add("screen-shake");
+  setTimeout(() => document.body.classList.remove("screen-shake"), duration);
+}
+
+function showRoarBanner() {
+  const banner = document.createElement("div");
+  banner.className = "roar-banner";
+  banner.textContent = "ROARRR SURPRISE!";
+  document.body.appendChild(banner);
+  setTimeout(() => banner.remove(), 1300);
+}
+
+function rainEggs() {
+  for (let i = 0; i < 26; i++) {
+    setTimeout(() => {
+      spawnEggs(1, 40 + Math.random() * (window.innerWidth - 80), 90 + Math.random() * 60, 20, 1200);
+    }, i * 45);
+  }
+}
+
+function megaSurprise() {
+  const w = canvas.width;
+  const h = canvas.height;
+  burstConfetti(w * 0.5, h * 0.33, 180);
+  setTimeout(() => burstConfetti(w * 0.25, h * 0.28, 120), 180);
+  setTimeout(() => burstConfetti(w * 0.75, h * 0.28, 120), 300);
+  spawnEggs(32, window.innerWidth / 2, window.innerHeight * 0.75, 220, 1200);
+  rainEggs();
+  shakeScreen(700);
+  showRoarBanner();
 }
 
 function drawConfetti() {
