@@ -166,7 +166,7 @@ function shakeScreen(duration = 700) {
 function showRoarBanner() {
   const banner = document.createElement("div");
   banner.className = "roar-banner";
-  banner.textContent = "ROARRR SURPRISE!";
+  banner.textContent = "RAWR !!!";
   document.body.appendChild(banner);
   setTimeout(() => banner.remove(), 1300);
 }
@@ -381,7 +381,7 @@ function updateGame(delta) {
       if (gameScore >= TARGET_SCORE) {
         gameWon = true;
         gameRunning = false;
-        dinoMessage.textContent = "You reached 23. You are already 23rd today, birthday queen.";
+        dinoMessage.textContent = "You reached 23. You are already 23rd today, birthday queen. Please Continue to enter Birthday World.";
         dinoContinueButton.focus();
       }
     }
