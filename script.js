@@ -217,7 +217,7 @@ let gameWon = false;
 let gameScore = 0;
 let lastFrame = 0;
 let spawnTimer = 0;
-let speed = 4;
+let speed = 2.4;
 
 const gravity = 0.6;
 const jumpPower = -10.8;
@@ -227,7 +227,7 @@ function resetDinoGame() {
   obstacles.length = 0;
   gameScore = 0;
   spawnTimer = 0;
-  speed = 4;
+  speed = 2.4;
   gameOver = false;
   gameWon = false;
   dino.y = groundY - dino.height;
@@ -251,8 +251,8 @@ function jumpDino() {
 }
 
 function spawnObstacle() {
-  const height = 28 + Math.random() * 24;
-  const width = 12 + Math.random() * 10;
+  const height = 22 + Math.random() * 16;
+  const width = 10 + Math.random() * 6;
   obstacles.push({
     x: dinoCanvas.width + 10,
     y: groundY - height,
@@ -263,11 +263,12 @@ function spawnObstacle() {
 }
 
 function checkCollision(obs) {
+  const padding = 5;
   return (
-    dino.x < obs.x + obs.width &&
-    dino.x + dino.width > obs.x &&
-    dino.y < obs.y + obs.height &&
-    dino.y + dino.height > obs.y
+    dino.x + padding < obs.x + obs.width - padding &&
+    dino.x + dino.width - padding > obs.x + padding &&
+    dino.y + padding < obs.y + obs.height - padding &&
+    dino.y + dino.height - padding > obs.y + padding
   );
 }
 
@@ -280,12 +281,12 @@ function updateGame(delta) {
   }
 
   spawnTimer += delta;
-  if (spawnTimer > 900 + Math.random() * 450) {
+  if (spawnTimer > 1300 + Math.random() * 700) {
     spawnObstacle();
     spawnTimer = 0;
   }
 
-  speed += 0.0009 * delta;
+  speed += 0.00035 * delta;
   obstacles.forEach((obs) => {
     obs.x -= speed;
     if (!obs.counted && obs.x + obs.width < dino.x) {
@@ -297,6 +298,7 @@ function updateGame(delta) {
         gameRunning = false;
         dinoMessage.textContent = "You reached 23. You are already 23rd today, birthday queen.";
         dinoContinueButton.classList.remove("hidden");
+        dinoContinueButton.focus();
       }
     }
   });
