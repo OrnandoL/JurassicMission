@@ -37,6 +37,7 @@ const SITE_PASSWORD = "venez23";
 const TARGET_SCORE = 23;
 
 mainContent.classList.add("locked");
+gatePassword.focus();
 
 photoFiles.forEach((src, i) => {
   const card = document.createElement("button");
