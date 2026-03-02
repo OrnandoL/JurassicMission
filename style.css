@@ -86,6 +86,10 @@ body::after {
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
 }
 
+.game-card {
+  width: min(520px, 100%);
+}
+
 .gate-tag {
   margin: 0;
   text-transform: uppercase;
@@ -129,6 +133,27 @@ body::after {
   color: #b42318;
   font-size: 0.92rem;
   font-weight: 700;
+}
+
+.dino-canvas {
+  margin-top: 8px;
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  border-radius: 12px;
+  border: 2px solid rgba(45, 106, 79, 0.42);
+  background: linear-gradient(180deg, #f2f9eb 0%, #e1efce 100%);
+  touch-action: manipulation;
+}
+
+.dino-score {
+  margin: 10px 0 6px;
+  font-weight: 700;
+  color: var(--jungle-deep);
+}
+
+.game-message {
+  margin: 0 0 10px;
 }
 
 .sr-only {
@@ -339,5 +364,9 @@ h1 {
 
   .photo-card img {
     height: 190px;
+  }
+
+  .game-card {
+    width: min(480px, 100%);
   }
 }

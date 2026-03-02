@@ -22,12 +22,19 @@ const songButton = document.getElementById("songButton");
 const surpriseButton = document.getElementById("surpriseButton");
 const typeText = document.getElementById("typeText");
 const gate = document.getElementById("gate");
+const dinoGate = document.getElementById("dinoGate");
 const mainContent = document.getElementById("mainContent");
 const gatePassword = document.getElementById("gatePassword");
 const gateButton = document.getElementById("gateButton");
 const gateError = document.getElementById("gateError");
+const dinoCanvas = document.getElementById("dinoCanvas");
+const dinoScore = document.getElementById("dinoScore");
+const dinoMessage = document.getElementById("dinoMessage");
+const dinoStartButton = document.getElementById("dinoStartButton");
+const dinoContinueButton = document.getElementById("dinoContinueButton");
 
 const SITE_PASSWORD = "venez23";
+const TARGET_SCORE = 23;
 
 mainContent.classList.add("locked");
 gatePassword.focus();
@@ -109,6 +116,7 @@ surpriseButton.addEventListener("click", () => {
 });
 
 document.addEventListener("click", (e) => {
+  if (mainContent.classList.contains("locked")) return;
   if (e.target.closest("button")) return;
   spawnEggs(4, e.clientX, e.clientY);
 });
@@ -170,16 +178,25 @@ function drawConfetti() {
 
 function unlockSite() {
   gate.classList.add("hidden");
+  dinoGate.classList.add("hidden");
   mainContent.classList.remove("locked");
   mainContent.setAttribute("aria-hidden", "false");
   gate.setAttribute("aria-hidden", "true");
+  dinoGate.setAttribute("aria-hidden", "true");
   gateError.textContent = "";
   gatePassword.value = "";
 }
 
+function showDinoGate() {
+  gate.classList.add("hidden");
+  gate.setAttribute("aria-hidden", "true");
+  dinoGate.classList.remove("hidden");
+  dinoGate.setAttribute("aria-hidden", "false");
+}
+
 function tryUnlock() {
   if (gatePassword.value.trim() === SITE_PASSWORD) {
-    unlockSite();
+    showDinoGate();
     return;
   }
 
@@ -190,6 +207,154 @@ gateButton.addEventListener("click", tryUnlock);
 gatePassword.addEventListener("keydown", (e) => {
   if (e.key === "Enter") tryUnlock();
 });
+
+const dinoCtx = dinoCanvas.getContext("2d");
+const dino = { x: 42, y: 0, width: 28, height: 32, vy: 0 };
+const obstacles = [];
+let gameRunning = false;
+let gameOver = false;
+let gameWon = false;
+let gameScore = 0;
+let lastFrame = 0;
+let spawnTimer = 0;
+let speed = 4;
+
+const gravity = 0.6;
+const jumpPower = -10.8;
+const groundY = dinoCanvas.height - 34;
+
+function resetDinoGame() {
+  obstacles.length = 0;
+  gameScore = 0;
+  spawnTimer = 0;
+  speed = 4;
+  gameOver = false;
+  gameWon = false;
+  dino.y = groundY - dino.height;
+  dino.vy = 0;
+  dinoScore.textContent = `Score: ${gameScore} / ${TARGET_SCORE}`;
+  dinoMessage.textContent = "Press Space or tap the game to jump.";
+  dinoContinueButton.classList.add("hidden");
+  drawGame();
+}
+
+function startDinoGame() {
+  resetDinoGame();
+  gameRunning = true;
+  dinoStartButton.textContent = "Restart Game";
+}
+
+function jumpDino() {
+  if (!gameRunning || gameOver || gameWon) return;
+  const onGround = dino.y >= groundY - dino.height - 0.1;
+  if (onGround) dino.vy = jumpPower;
+}
+
+function spawnObstacle() {
+  const height = 28 + Math.random() * 24;
+  const width = 12 + Math.random() * 10;
+  obstacles.push({
+    x: dinoCanvas.width + 10,
+    y: groundY - height,
+    width,
+    height,
+    counted: false
+  });
+}
+
+function checkCollision(obs) {
+  return (
+    dino.x < obs.x + obs.width &&
+    dino.x + dino.width > obs.x &&
+    dino.y < obs.y + obs.height &&
+    dino.y + dino.height > obs.y
+  );
+}
+
+function updateGame(delta) {
+  dino.vy += gravity;
+  dino.y += dino.vy;
+  if (dino.y > groundY - dino.height) {
+    dino.y = groundY - dino.height;
+    dino.vy = 0;
+  }
+
+  spawnTimer += delta;
+  if (spawnTimer > 900 + Math.random() * 450) {
+    spawnObstacle();
+    spawnTimer = 0;
+  }
+
+  speed += 0.0009 * delta;
+  obstacles.forEach((obs) => {
+    obs.x -= speed;
+    if (!obs.counted && obs.x + obs.width < dino.x) {
+      obs.counted = true;
+      gameScore += 1;
+      dinoScore.textContent = `Score: ${gameScore} / ${TARGET_SCORE}`;
+      if (gameScore >= TARGET_SCORE) {
+        gameWon = true;
+        gameRunning = false;
+        dinoMessage.textContent = "You reached 23. You are already 23rd today, birthday queen.";
+        dinoContinueButton.classList.remove("hidden");
+      }
+    }
+  });
+
+  while (obstacles.length && obstacles[0].x + obstacles[0].width < -20) {
+    obstacles.shift();
+  }
+
+  if (!gameWon && obstacles.some(checkCollision)) {
+    gameOver = true;
+    gameRunning = false;
+    dinoMessage.textContent = "Oops, dino crashed. Press Restart Game and try again.";
+  }
+}
+
+function drawGame() {
+  dinoCtx.clearRect(0, 0, dinoCanvas.width, dinoCanvas.height);
+
+  dinoCtx.strokeStyle = "#355f4a";
+  dinoCtx.lineWidth = 2;
+  dinoCtx.beginPath();
+  dinoCtx.moveTo(0, groundY + 1);
+  dinoCtx.lineTo(dinoCanvas.width, groundY + 1);
+  dinoCtx.stroke();
+
+  dinoCtx.fillStyle = "#2d6a4f";
+  dinoCtx.fillRect(dino.x, dino.y, dino.width, dino.height);
+  dinoCtx.fillRect(dino.x + 8, dino.y - 8, 12, 10);
+
+  dinoCtx.fillStyle = "#4e8a6a";
+  obstacles.forEach((obs) => {
+    dinoCtx.fillRect(obs.x, obs.y, obs.width, obs.height);
+  });
+}
+
+function gameLoop(ts) {
+  const delta = lastFrame ? ts - lastFrame : 16;
+  lastFrame = ts;
+
+  if (gameRunning) updateGame(delta);
+  drawGame();
+  requestAnimationFrame(gameLoop);
+}
+
+dinoStartButton.addEventListener("click", startDinoGame);
+dinoContinueButton.addEventListener("click", unlockSite);
+dinoCanvas.addEventListener("pointerdown", jumpDino);
+document.addEventListener("keydown", (e) => {
+  if (dinoGate.classList.contains("hidden")) return;
+  if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+  if (e.code === "Space" || e.key === "ArrowUp") {
+    e.preventDefault();
+    jumpDino();
+  }
+});
+
+resetDinoGame();
+requestAnimationFrame(gameLoop);
 
 drawConfetti();
 typeWriter();

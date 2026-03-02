@@ -21,6 +21,19 @@
     </div>
   </section>
 
+  <section id="dinoGate" class="gate hidden" role="dialog" aria-modal="true" aria-label="Dino game challenge">
+    <div class="gate-card game-card">
+      <p class="gate-tag">No Internet Dino Challenge</p>
+      <h2>Score 23 To Enter</h2>
+      <p class="gate-hint">Jump over cactuses and reach score 23 first.</p>
+      <canvas id="dinoCanvas" class="dino-canvas" width="420" height="180" aria-label="Dino game area"></canvas>
+      <p id="dinoScore" class="dino-score">Score: 0 / 23</p>
+      <p id="dinoMessage" class="gate-hint game-message">Press Start, then Space or Tap to jump.</p>
+      <button id="dinoStartButton" class="btn gate-btn">Start Game</button>
+      <button id="dinoContinueButton" class="btn gate-btn hidden">Enter Birthday World</button>
+    </div>
+  </section>
+
   <main id="mainContent" class="page locked" aria-hidden="true">
     <section class="hero">
       <p class="tag">Jurassic Birthday Mission</p>
