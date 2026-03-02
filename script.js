@@ -408,9 +408,52 @@ function drawGame() {
   dinoCtx.lineTo(dinoCanvas.width, groundY + 1);
   dinoCtx.stroke();
 
-  dinoCtx.fillStyle = "#2d6a4f";
-  dinoCtx.fillRect(dino.x, dino.y, dino.width, dino.height);
-  dinoCtx.fillRect(dino.x + 8, dino.y - 8, 12, 10);
+  const bodyX = dino.x;
+  const bodyY = dino.y;
+  const bodyW = dino.width;
+  const bodyH = dino.height;
+  const centerX = bodyX + bodyW * 0.5;
+  const centerY = bodyY + bodyH * 0.58;
+
+  dinoCtx.fillStyle = "#5fbf7f";
+  dinoCtx.beginPath();
+  dinoCtx.ellipse(centerX, centerY, bodyW * 0.52, bodyH * 0.46, 0, 0, Math.PI * 2);
+  dinoCtx.fill();
+
+  dinoCtx.fillStyle = "#72cf90";
+  dinoCtx.beginPath();
+  dinoCtx.ellipse(bodyX + bodyW * 0.68, bodyY + bodyH * 0.28, bodyW * 0.28, bodyH * 0.25, 0, 0, Math.PI * 2);
+  dinoCtx.fill();
+
+  dinoCtx.fillStyle = "#4f9b68";
+  dinoCtx.beginPath();
+  dinoCtx.moveTo(bodyX + bodyW * 0.04, bodyY + bodyH * 0.72);
+  dinoCtx.lineTo(bodyX - bodyW * 0.22, bodyY + bodyH * 0.58);
+  dinoCtx.lineTo(bodyX + bodyW * 0.08, bodyY + bodyH * 0.46);
+  dinoCtx.closePath();
+  dinoCtx.fill();
+
+  dinoCtx.fillStyle = "#4f9b68";
+  dinoCtx.fillRect(bodyX + bodyW * 0.3, bodyY + bodyH * 0.88, bodyW * 0.17, bodyH * 0.14);
+  dinoCtx.fillRect(bodyX + bodyW * 0.56, bodyY + bodyH * 0.88, bodyW * 0.17, bodyH * 0.14);
+
+  dinoCtx.fillStyle = "#1f3b2b";
+  dinoCtx.beginPath();
+  dinoCtx.arc(bodyX + bodyW * 0.76, bodyY + bodyH * 0.25, 2.2, 0, Math.PI * 2);
+  dinoCtx.fill();
+
+  dinoCtx.fillStyle = "#ff8fb0";
+  dinoCtx.beginPath();
+  dinoCtx.arc(bodyX + bodyW * 0.69, bodyY + bodyH * 0.33, 2.6, 0, Math.PI * 2);
+  dinoCtx.fill();
+
+  dinoCtx.fillStyle = "#f46c98";
+  dinoCtx.beginPath();
+  dinoCtx.arc(bodyX + bodyW * 0.81, bodyY + bodyH * 0.08, 3.1, 0, Math.PI * 2);
+  dinoCtx.arc(bodyX + bodyW * 0.69, bodyY + bodyH * 0.08, 3.1, 0, Math.PI * 2);
+  dinoCtx.fill();
+  dinoCtx.fillStyle = "#f7a6c2";
+  dinoCtx.fillRect(bodyX + bodyW * 0.72, bodyY + bodyH * 0.06, 3.4, 4.2);
 
   dinoCtx.fillStyle = "#4e8a6a";
   obstacles.forEach((obs) => {
