@@ -182,6 +182,7 @@ function rainEggs() {
 function megaSurprise() {
   const w = canvas.width;
   const h = canvas.height;
+  playCuteRoar();
   burstConfetti(w * 0.5, h * 0.33, 180);
   setTimeout(() => burstConfetti(w * 0.25, h * 0.28, 120), 180);
   setTimeout(() => burstConfetti(w * 0.75, h * 0.28, 120), 300);
@@ -189,6 +190,53 @@ function megaSurprise() {
   rainEggs();
   shakeScreen(700);
   showRoarBanner();
+}
+
+function playCuteRoar() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+
+  const ctxAudio = new AudioCtx();
+  const now = ctxAudio.currentTime;
+  const master = ctxAudio.createGain();
+  master.gain.setValueAtTime(0.0001, now);
+  master.gain.exponentialRampToValueAtTime(0.2, now + 0.04);
+  master.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+  master.connect(ctxAudio.destination);
+
+  const roar = ctxAudio.createOscillator();
+  roar.type = "sawtooth";
+  roar.frequency.setValueAtTime(250, now);
+  roar.frequency.exponentialRampToValueAtTime(120, now + 0.35);
+  roar.frequency.exponentialRampToValueAtTime(170, now + 0.55);
+
+  const roarFilter = ctxAudio.createBiquadFilter();
+  roarFilter.type = "lowpass";
+  roarFilter.frequency.setValueAtTime(850, now);
+
+  const chirp = ctxAudio.createOscillator();
+  chirp.type = "triangle";
+  chirp.frequency.setValueAtTime(520, now + 0.32);
+  chirp.frequency.exponentialRampToValueAtTime(380, now + 0.62);
+
+  const chirpGain = ctxAudio.createGain();
+  chirpGain.gain.setValueAtTime(0.0001, now);
+  chirpGain.gain.exponentialRampToValueAtTime(0.1, now + 0.34);
+  chirpGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.74);
+
+  roar.connect(roarFilter);
+  roarFilter.connect(master);
+  chirp.connect(chirpGain);
+  chirpGain.connect(master);
+
+  roar.start(now);
+  chirp.start(now + 0.28);
+  roar.stop(now + 0.82);
+  chirp.stop(now + 0.8);
+
+  setTimeout(() => {
+    ctxAudio.close();
+  }, 1000);
 }
 
 function drawConfetti() {
