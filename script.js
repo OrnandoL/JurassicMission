@@ -177,6 +177,11 @@ function drawConfetti() {
 }
 
 function unlockSite() {
+  if (!gameWon) {
+    dinoMessage.textContent = `You must score ${TARGET_SCORE} first before entering Birthday World.`;
+    return;
+  }
+
   gate.classList.add("hidden");
   dinoGate.classList.add("hidden");
   mainContent.classList.remove("locked");
@@ -235,6 +240,7 @@ function resetDinoGame() {
   dinoScore.textContent = `Score: ${gameScore} / ${TARGET_SCORE}`;
   dinoMessage.textContent = "Press Space or tap the game to jump.";
   dinoContinueButton.classList.add("hidden");
+  dinoContinueButton.disabled = true;
   drawGame();
 }
 
@@ -298,6 +304,7 @@ function updateGame(delta) {
         gameRunning = false;
         dinoMessage.textContent = "You reached 23. You are already 23rd today, birthday queen.";
         dinoContinueButton.classList.remove("hidden");
+        dinoContinueButton.disabled = false;
         dinoContinueButton.focus();
       }
     }
