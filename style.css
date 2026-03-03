@@ -499,3 +499,39 @@ body.screen-shake main {
     font-size: 0.95rem;
   }
 }
+
+@media (max-width: 430px), (max-height: 760px) {
+  .gate {
+    padding: 8px;
+  }
+
+  .code-mission-card {
+    width: min(390px, 100%);
+    padding: 12px 10px;
+  }
+
+  .code-mission-card h2 {
+    font-size: 1.2rem;
+    margin: 6px 0 5px;
+  }
+
+  .code-mission-card .gate-hint {
+    font-size: 0.86rem;
+    margin-bottom: 7px;
+  }
+
+  .repo-preview-wrap {
+    margin-top: 6px;
+    border-radius: 10px;
+  }
+
+  .repo-preview-frame {
+    height: min(46vh, 320px);
+  }
+
+  .code-mission-card .gate-btn {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    padding: 9px 12px;
+  }
+}
