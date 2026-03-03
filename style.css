@@ -490,7 +490,7 @@ body.screen-shake main {
   }
 
   .repo-preview-frame {
-    height: min(54vh, 390px);
+    height: min(66vh, 520px);
   }
 
   .gate-btn {
@@ -526,7 +526,7 @@ body.screen-shake main {
   }
 
   .repo-preview-frame {
-    height: min(46vh, 320px);
+    height: min(56vh, 420px);
   }
 
   .code-mission-card .gate-btn {
