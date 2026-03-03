@@ -190,6 +190,10 @@ body {
   right: 0;
 }
 
+.five .idea-4 {
+  font-size: 1.7rem;
+}
+
 .idea-3 strong {
   border-radius: 3px;
   display: inline-block;
@@ -197,7 +201,7 @@ body {
 }
 
 .five .idea-5 {
-  font-size: 4rem;
+  font-size: 3.1rem;
 }
 
 .idea-5 span, .idea-6 span, .wish-hbd span {
@@ -431,6 +435,15 @@ body {
 
   .idea-5 span {
     display: block;
+  }
+
+  .five .idea-4 {
+    font-size: 1.25rem;
+  }
+
+  .five .idea-5 {
+    font-size: 2.15rem;
+    line-height: 1.12;
   }
 
   .idea-6 span {
