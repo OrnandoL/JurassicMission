@@ -9,7 +9,7 @@ const photoFiles = [
 
 const loveLines = [
   "You make my world brighter than a meteor shower.",
-  "Today we celebrate the cutest dino queen turning 23.",
+  "Today we celebrate the cutest 🦖 queen turning 23.",
   "Roaring happy birthday, Venezya Setiawan."
 ];
 
@@ -23,6 +23,7 @@ const surpriseButton = document.getElementById("surpriseButton");
 const typeText = document.getElementById("typeText");
 const gate = document.getElementById("gate");
 const dinoGate = document.getElementById("dinoGate");
+const codeGate = document.getElementById("codeGate");
 const mainContent = document.getElementById("mainContent");
 const gatePassword = document.getElementById("gatePassword");
 const gateButton = document.getElementById("gateButton");
@@ -31,10 +32,14 @@ const dinoCanvas = document.getElementById("dinoCanvas");
 const dinoScore = document.getElementById("dinoScore");
 const dinoMessage = document.getElementById("dinoMessage");
 const dinoStartButton = document.getElementById("dinoStartButton");
+const adminSkipButton = document.getElementById("adminSkipButton");
 const dinoContinueButton = document.getElementById("dinoContinueButton");
+const codeGateContinueButton = document.getElementById("codeGateContinueButton");
+const repoPreviewFrame = document.querySelector(".repo-preview-frame");
 
 const SITE_PASSWORD = "venez23";
 const TARGET_SCORE = 23;
+const isAdminMode = new URLSearchParams(window.location.search).get("admin") === "1";
 
 mainContent.classList.add("locked");
 gatePassword.focus();
@@ -258,17 +263,44 @@ function drawConfetti() {
 
 function unlockSite() {
   if (!gameWon) {
-    dinoMessage.textContent = `You must score ${TARGET_SCORE} first before entering Birthday World.`;
-    window.alert(`Clear the game first. Reach score ${TARGET_SCORE} to unlock Birthday World.`);
+    dinoMessage.textContent = `You must score ${TARGET_SCORE} first before entering \u{1F996} World.`;
+    window.alert(`Clear the game first. Reach score ${TARGET_SCORE} to unlock \u{1F996} World.`);
     return;
   }
 
+  showCodeGate();
+}
+
+function stopPreviewSong() {
+  if (!repoPreviewFrame) return;
+
+  try {
+    const frameDoc = repoPreviewFrame.contentDocument || repoPreviewFrame.contentWindow?.document;
+    if (!frameDoc) return;
+
+    const audios = frameDoc.querySelectorAll("audio, .song");
+    audios.forEach((audioEl) => {
+      audioEl.pause();
+      audioEl.currentTime = 0;
+    });
+  } catch {
+    // Ignore cross-frame access issues.
+  }
+
+  // Ensure embedded page is unloaded so hbd.mpeg cannot keep playing.
+  repoPreviewFrame.src = "about:blank";
+}
+
+function enterBirthdayWorld() {
+  stopPreviewSong();
   gate.classList.add("hidden");
   dinoGate.classList.add("hidden");
+  codeGate.classList.add("hidden");
   mainContent.classList.remove("locked");
   mainContent.setAttribute("aria-hidden", "false");
   gate.setAttribute("aria-hidden", "true");
   dinoGate.setAttribute("aria-hidden", "true");
+  codeGate.setAttribute("aria-hidden", "true");
   gateError.textContent = "";
   gatePassword.value = "";
 }
@@ -278,6 +310,22 @@ function showDinoGate() {
   gate.setAttribute("aria-hidden", "true");
   dinoGate.classList.remove("hidden");
   dinoGate.setAttribute("aria-hidden", "false");
+  if (adminSkipButton) {
+    adminSkipButton.hidden = !isAdminMode;
+  }
+  if (isAdminMode && adminSkipButton) {
+    dinoMessage.textContent = "Admin mode active. You can skip this game.";
+  }
+}
+
+function showCodeGate() {
+  dinoGate.classList.add("hidden");
+  dinoGate.setAttribute("aria-hidden", "true");
+  codeGate.classList.remove("hidden");
+  codeGate.setAttribute("aria-hidden", "false");
+  if (codeGateContinueButton) {
+    codeGateContinueButton.focus();
+  }
 }
 
 function tryUnlock() {
@@ -320,6 +368,7 @@ function resetDinoGame() {
   dino.vy = 0;
   dinoScore.textContent = `Score: ${gameScore} / ${TARGET_SCORE}`;
   dinoMessage.textContent = "Press Space or tap the game to jump.";
+  dinoContinueButton.classList.add("hidden");
   drawGame();
 }
 
@@ -327,6 +376,18 @@ function startDinoGame() {
   resetDinoGame();
   gameRunning = true;
   dinoStartButton.textContent = "Restart Game";
+}
+
+function adminSkipDinoGame() {
+  if (!isAdminMode || !dinoContinueButton) return;
+  gameWon = true;
+  gameRunning = false;
+  gameOver = false;
+  gameScore = TARGET_SCORE;
+  dinoScore.textContent = `Score: ${TARGET_SCORE} / ${TARGET_SCORE}`;
+  dinoMessage.textContent = "Admin bypass enabled. Entering \u{1F996} World.";
+  dinoContinueButton.classList.remove("hidden");
+  unlockSite();
 }
 
 function jumpDino() {
@@ -381,7 +442,8 @@ function updateGame(delta) {
       if (gameScore >= TARGET_SCORE) {
         gameWon = true;
         gameRunning = false;
-        dinoMessage.textContent = "You reached 23. You are already 23rd today, birthday queen. Please Continue to enter Birthday World.";
+        dinoMessage.textContent = "You reached 23 jumps. Click Enter \u{1F996} World to continue.";
+        dinoContinueButton.classList.remove("hidden");
         dinoContinueButton.focus();
       }
     }
@@ -394,7 +456,7 @@ function updateGame(delta) {
   if (!gameWon && obstacles.some(checkCollision)) {
     gameOver = true;
     gameRunning = false;
-    dinoMessage.textContent = "Oops, dino crashed. Press Restart Game and try again.";
+    dinoMessage.textContent = "Oops, 🦖 crashed. Press Restart Game and try again.";
   }
 }
 
@@ -471,7 +533,13 @@ function gameLoop(ts) {
 }
 
 dinoStartButton.addEventListener("click", startDinoGame);
+if (adminSkipButton) {
+  adminSkipButton.addEventListener("click", adminSkipDinoGame);
+}
 dinoContinueButton.addEventListener("click", unlockSite);
+if (codeGateContinueButton) {
+  codeGateContinueButton.addEventListener("click", enterBirthdayWorld);
+}
 dinoCanvas.addEventListener("pointerdown", jumpDino);
 document.addEventListener("keydown", (e) => {
   if (dinoGate.classList.contains("hidden")) return;
@@ -488,3 +556,5 @@ requestAnimationFrame(gameLoop);
 drawConfetti();
 typeWriter();
 setTimeout(burstConfetti, 500);
+
+

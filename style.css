@@ -76,6 +76,10 @@ body::after {
   display: none;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .gate-card {
   width: min(460px, 100%);
   background: color-mix(in srgb, var(--card) 92%, white);
@@ -88,6 +92,10 @@ body::after {
 
 .game-card {
   width: min(520px, 100%);
+}
+
+.code-mission-card {
+  width: min(700px, 100%);
 }
 
 .gate-tag {
@@ -154,6 +162,41 @@ body::after {
 
 .game-message {
   margin: 0 0 10px;
+}
+
+.code-block {
+  margin: 10px 0 0;
+  padding: 12px;
+  text-align: left;
+  border-radius: 12px;
+  border: 1px solid rgba(45, 106, 79, 0.35);
+  background: #122218;
+  color: #d3ffd8;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.code-block code {
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+.repo-preview-wrap {
+  margin-top: 10px;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(45, 106, 79, 0.35);
+  overflow: hidden;
+  background: #0f1d14;
+}
+
+.repo-preview-frame {
+  display: block;
+  width: 100%;
+  height: min(72vh, 620px);
+  border: 0;
+  background: #ffffff;
 }
 
 .sr-only {
@@ -422,5 +465,13 @@ body.screen-shake main {
 
   .game-card {
     width: min(480px, 100%);
+  }
+
+  .code-mission-card {
+    width: min(520px, 100%);
+  }
+
+  .repo-preview-frame {
+    height: min(64vh, 500px);
   }
 }

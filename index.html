@@ -11,18 +11,18 @@
 
   <section id="gate" class="gate" role="dialog" aria-modal="true" aria-label="Enter password">
     <div class="gate-card">
-      <p class="gate-tag">Jurassic Access</p>
+      <p class="gate-tag">🦖 Access</p>
       <h2>Enter Secret Password</h2>
       <p class="gate-hint">Only the birthday queen can unlock this mission.</p>
       <label class="sr-only" for="gatePassword">Password</label>
       <input id="gatePassword" class="gate-input" type="password" placeholder="Password" />
-      <button id="gateButton" class="btn gate-btn">Enter Dino World</button>
+      <button id="gateButton" class="btn gate-btn">Enter Jurassic World</button>
       <p id="gateError" class="gate-error" aria-live="polite"></p>
     </div>
   </section>
 
   <section id="dinoGate" class="gate hidden" role="dialog" aria-modal="true" aria-label="Dino game challenge">
-    <div class="gate-card game-card">
+    <div class="gate-card game-card code-mission-card">
       <p class="gate-tag">23rd Birthday Challenge</p>
       <h2>Score 23 To Enter</h2>
       <p class="gate-hint">Jump over cactuses and reach score 23 first. Each jump represent Venez Journey in Life. YOU CAN DO IT !!! </p>
@@ -30,26 +30,44 @@
       <p id="dinoScore" class="dino-score">Score: 0 / 23</p>
       <p id="dinoMessage" class="gate-hint game-message">Press Start, then Space or Tap to jump.</p>
       <button id="dinoStartButton" class="btn gate-btn">Start Game</button>
-      <button id="dinoContinueButton" class="btn gate-btn hidden">Enter Birthday World</button>
+      <button id="adminSkipButton" class="btn gate-btn" hidden>Admin: Skip &#129430; Game</button>
+      <button id="dinoContinueButton" class="btn gate-btn hidden">Enter Jurassic World</button>
+    </div>
+  </section>
+
+  <section id="codeGate" class="gate hidden" role="dialog" aria-modal="true" aria-label="Code mission">
+    <div class="gate-card game-card">
+      <p class="gate-tag">🦖 Code Mission</p>
+      <h2>One More Step Before 🦖</h2>
+      <p class="gate-hint">Hehehe.</p>
+      <div class="repo-preview-wrap" aria-label="Happybirthday repo preview">
+        <iframe
+          class="repo-preview-frame"
+          src="./happybirthday/index.html"
+          title="Happybirthday repository preview"
+          loading="lazy"
+        ></iframe>
+      </div>
+      <button id="codeGateContinueButton" class="btn gate-btn">Continue To 🦖 World</button>
     </div>
   </section>
 
   <main id="mainContent" class="page locked" aria-hidden="true">
     <section class="hero">
-      <p class="tag">Jurassic Birthday Mission</p>
+      <p class="tag">🦖 Birthday Mission</p>
       <h1>Roarrr! Happy 23rd Birthday</h1>
       <p class="subtitle" id="typeText"></p>
 
       <div class="actions">
         <button id="songButton" class="btn">Play Birthday Song</button>
-        <button id="surpriseButton" class="btn btn-alt">Hatch Dino Surprise</button>
+        <button id="surpriseButton" class="btn btn-alt">Hatch 🦖 Surprise</button>
       </div>
 
       <audio id="birthdaySong" src="assets/audio/happy-birthday.mp3" preload="auto"></audio>
     </section>
 
     <section class="gallery-wrap">
-      <h2>Venezya Dino Memory Cave</h2>
+      <h2>Venezya 🦖 Memory Cave</h2>
       <p class="hint">Tap a memory fossil</p>
       <div id="gallery" class="gallery"></div>
     </section>
