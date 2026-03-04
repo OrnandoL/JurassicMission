@@ -1,18 +1,77 @@
-# Birthday Mini Website
+# JurassicMission
 
-## How to use
-1. Put your girlfriend photos inside `assets/images/`.
-2. Rename them to:
-   - `photo1.jpg`
-   - `photo2.jpg`
-   - `photo3.jpg`
-   - `photo4.jpg`
-   - `photo5.jpg`
-   - `photo6.jpg`
-3. Put your song file at `assets/audio/happy-birthday.mp3`.
-4. Open `index.html` in your browser.
+Interactive birthday website with a mission-style flow:
+1. Password gate
+2. Dino jump challenge
+3. Code mission preview (embedded `happybirthday` view)
+4. Main birthday world (gallery, song, surprise effects)
 
-## Quick personalize
-- Edit the title text in `index.html`.
-- Edit message lines in `script.js` under `loveLines`.
-- Add/remove photos in `script.js` under `photoFiles`.
+## Highlights
+- Password-protected entry flow
+- Mini dino game unlock challenge
+- Admin bypass option for testing
+- Embedded WhatsApp-style `happybirthday` mission page
+- Photo gallery modal + confetti/egg surprise effects
+- Mobile-tuned UI adjustments
+
+## Project Structure
+- `index.html`: Main flow and gates
+- `script.js`: App logic, game logic, gate transitions
+- `style.css`: Main site styling and responsive layout
+- `assets/`: Main site images/audio assets
+- `happybirthday/`: Embedded third-party-based mission page
+  - `happybirthday/index.html`
+  - `happybirthday/style/main.css`
+  - `happybirthday/script/main.js`
+  - `happybirthday/music/`
+
+## Local Run
+1. Open folder `birthday-site-try-jurassic`
+2. Run with Live Server (recommended), or open `index.html` directly
+3. Use password from `script.js` (`SITE_PASSWORD`)
+
+## Test/Admin Bypass
+Add `?admin=1` to URL to reveal admin skip button on the dino gate.
+
+Example:
+`http://127.0.0.1:5500/index.html?admin=1`
+
+## Content Customization
+### Main mission page
+- Title/tag text: `index.html`
+- Rotating love lines: `script.js` -> `loveLines`
+- Photos:
+  - Place files in `assets/images/`
+  - Update `script.js` -> `photoFiles`
+- Main birthday song:
+  - Path: `assets/audio/happy-birthday.mp3`
+  - Control button in hero section
+
+### Embedded code mission (`happybirthday`)
+- Header name/status and chat content: `happybirthday/index.html`
+- WhatsApp-style layout: `happybirthday/style/main.css`
+- Embedded mission audio source: `happybirthday/index.html` (`./music/hbd.mp3`)
+
+## Deployment
+### GitHub Pages
+1. Push `main` branch to GitHub
+2. GitHub repo -> Settings -> Pages
+3. Source: `Deploy from a branch`
+4. Branch: `main`, folder: `/ (root)`
+
+Live URL pattern:
+`https://<username>.github.io/<repo-name>/`
+
+### Netlify (if used)
+- Connect repository and deploy from `main`
+- Publish directory: project root (`.`)
+
+## Notes
+- This project contains an embedded subproject in `happybirthday/`; keep the folder tracked as regular files (not nested git submodule) for reliable deploys.
+- If preview audio continues after leaving code mission, `script.js` includes logic to stop iframe audio and unload iframe when continuing.
+
+## Policy and Compliance
+- License status: proprietary / all rights reserved -> `LICENSE`
+- Privacy policy -> `PRIVACY.md`
+- Security policy -> `SECURITY.md`
+- Third-party notices -> `THIRD_PARTY_LICENSES.md`
