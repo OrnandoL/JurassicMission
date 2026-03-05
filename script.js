@@ -35,6 +35,8 @@ const dinoStartButton = document.getElementById("dinoStartButton");
 const adminSkipButton = document.getElementById("adminSkipButton");
 const dinoContinueButton = document.getElementById("dinoContinueButton");
 const codeGateContinueButton = document.getElementById("codeGateContinueButton");
+const missionProgressFill = document.getElementById("missionProgressFill");
+const missionProgressText = document.getElementById("missionProgressText");
 const repoPreviewFrame = document.querySelector(".repo-preview-frame");
 
 const SITE_PASSWORD = "venez23";
@@ -271,6 +273,28 @@ function unlockSite() {
   showCodeGate();
 }
 
+function setCodeMissionProgress(percent) {
+  const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
+  if (missionProgressFill) {
+    missionProgressFill.style.width = `${safePercent}%`;
+  }
+  if (missionProgressText) {
+    missionProgressText.textContent = `Mission Progress: ${safePercent}%`;
+  }
+}
+
+function lockCodeGateContinue() {
+  if (!codeGateContinueButton) return;
+  codeGateContinueButton.classList.add("hidden");
+  codeGateContinueButton.disabled = true;
+}
+
+function unlockCodeGateContinue() {
+  if (!codeGateContinueButton) return;
+  codeGateContinueButton.classList.remove("hidden");
+  codeGateContinueButton.disabled = false;
+}
+
 function stopPreviewSong() {
   if (!repoPreviewFrame) return;
 
@@ -323,8 +347,10 @@ function showCodeGate() {
   dinoGate.setAttribute("aria-hidden", "true");
   codeGate.classList.remove("hidden");
   codeGate.setAttribute("aria-hidden", "false");
-  if (codeGateContinueButton) {
-    codeGateContinueButton.focus();
+  setCodeMissionProgress(0);
+  lockCodeGateContinue();
+  if (repoPreviewFrame) {
+    repoPreviewFrame.src = `./happybirthday/index.html?embedded=1&t=${Date.now()}`;
   }
 }
 
@@ -540,6 +566,25 @@ dinoContinueButton.addEventListener("click", unlockSite);
 if (codeGateContinueButton) {
   codeGateContinueButton.addEventListener("click", enterBirthdayWorld);
 }
+
+window.addEventListener("message", (event) => {
+  if (!repoPreviewFrame || event.source !== repoPreviewFrame.contentWindow) return;
+  const payload = event.data || {};
+  if (payload.type === "happybirthday:progress") {
+    setCodeMissionProgress(payload.value);
+    return;
+  }
+  if (payload.type === "happybirthday:completed") {
+    setCodeMissionProgress(100);
+    unlockCodeGateContinue();
+    codeGateContinueButton?.focus();
+    return;
+  }
+  if (payload.type === "happybirthday:restarted") {
+    setCodeMissionProgress(0);
+    lockCodeGateContinue();
+  }
+});
 dinoCanvas.addEventListener("pointerdown", jumpDino);
 document.addEventListener("keydown", (e) => {
   if (dinoGate.classList.contains("hidden")) return;

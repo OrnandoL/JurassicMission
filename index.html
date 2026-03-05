@@ -48,7 +48,13 @@
           loading="lazy"
         ></iframe>
       </div>
-      <button id="codeGateContinueButton" class="btn gate-btn">Continue To 🦖 World</button>
+      <div class="mission-progress" aria-label="Code mission progress">
+        <div class="mission-progress-track">
+          <div id="missionProgressFill" class="mission-progress-fill"></div>
+        </div>
+        <p id="missionProgressText" class="mission-progress-text">Mission Progress: 0%</p>
+      </div>
+      <button id="codeGateContinueButton" class="btn gate-btn hidden" disabled>Continue To 🦖 World</button>
     </div>
   </section>
 
@@ -59,7 +65,7 @@
       <p class="subtitle" id="typeText"></p>
 
       <div class="actions">
-        <button id="songButton" class="btn">Play Birthday Song</button>
+        <button id="songButton" class="btn">Play Song</button>
         <button id="surpriseButton" class="btn btn-alt">Hatch 🦖 Surprise</button>
       </div>
 

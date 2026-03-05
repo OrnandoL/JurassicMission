@@ -49,6 +49,17 @@ const animationTimeline = () => {
 
     // timeline
     const tl = new TimelineMax();
+    let lastProgress = -1;
+
+    const sendProgress = (value) => {
+        if (window.parent === window) return;
+        window.parent.postMessage({ type: "happybirthday:progress", value }, "*");
+    };
+
+    const sendMissionEvent = (type) => {
+        if (window.parent === window) return;
+        window.parent.postMessage({ type }, "*");
+    };
 
     tl.to(".container", 0.6, {
         visibility: "visible"
@@ -264,9 +275,23 @@ const animationTimeline = () => {
         "+=1"
     );
 
+    tl.eventCallback("onUpdate", () => {
+        const progress = Math.round(tl.progress() * 100);
+        if (progress === lastProgress) return;
+        lastProgress = progress;
+        sendProgress(progress);
+    });
+
+    tl.eventCallback("onComplete", () => {
+        sendMissionEvent("happybirthday:completed");
+    });
+
     // Restart Animation on click
     const replyBtn = document.getElementById("replay");
     replyBtn.addEventListener("click", () => {
+        lastProgress = -1;
+        sendMissionEvent("happybirthday:restarted");
+        sendProgress(0);
         tl.restart();
     });
 }
