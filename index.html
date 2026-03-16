@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Roar! Happy 23rd Birthday 🦖</title>
+  <title>Roar! Happy 23rd Birthday &#129430;</title>
+  <link rel="icon" type="image/png" href="happybirthday/img/favicon.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,7 +12,7 @@
 
   <section id="gate" class="gate" role="dialog" aria-modal="true" aria-label="Enter password">
     <div class="gate-card">
-      <p class="gate-tag">🦖 Access</p>
+      <p class="gate-tag">&#129430; Access</p>
       <h2>Enter Secret Password</h2>
       <p class="gate-hint">Only the birthday queen can unlock this mission.</p>
       <label class="sr-only" for="gatePassword">Password</label>
@@ -25,10 +26,10 @@
     <div class="gate-card game-card">
       <p class="gate-tag">23rd Birthday Challenge</p>
       <h2>Score 23 To Enter</h2>
-      <p class="gate-hint">Jump over cactuses and reach score 23 first. Each jump represent Venez Journey in Life. YOU CAN DO IT !!! </p>
+      <p class="gate-hint">Guide the birthday mascot over every cactus and reach 23 for the next chapter. Every jump celebrates another part of Venez's journey.</p>
       <canvas id="dinoCanvas" class="dino-canvas" width="420" height="180" aria-label="Dino game area"></canvas>
       <p id="dinoScore" class="dino-score">Score: 0 / 23</p>
-      <p id="dinoMessage" class="gate-hint game-message">Press Start, then Space or Tap to jump.</p>
+      <p id="dinoMessage" class="gate-hint game-message">Press Start, then tap or press Space to help her jump.</p>
       <button id="dinoStartButton" class="btn gate-btn">Start Game</button>
       <button id="adminSkipButton" class="btn gate-btn" hidden>Admin: Skip &#129430; Game</button>
       <button id="dinoContinueButton" class="btn gate-btn hidden">Enter Jurassic World</button>
@@ -37,9 +38,10 @@
 
   <section id="codeGate" class="gate hidden" role="dialog" aria-modal="true" aria-label="Code mission">
     <div class="gate-card game-card code-mission-card">
-      <p class="gate-tag">🦖 Code Mission</p>
-      <h2>One More Step Before 🦖</h2>
-      <p class="gate-hint">Hehehe.</p>
+      <div class="code-mission-head">
+        <p class="gate-tag">&#129430; Code Mission</p>
+        <h2>One More Step Before &#129430;</h2>
+      </div>
       <div class="repo-preview-wrap" aria-label="Happybirthday repo preview">
         <iframe
           class="repo-preview-frame"
@@ -54,28 +56,90 @@
         </div>
         <p id="missionProgressText" class="mission-progress-text">Mission Progress: 0%</p>
       </div>
-      <button id="codeGateContinueButton" class="btn gate-btn hidden" disabled>Continue To 🦖 World</button>
+      <button id="codeGateContinueButton" class="btn gate-btn hidden" disabled>Continue To &#129430; World</button>
     </div>
   </section>
 
   <main id="mainContent" class="page locked" aria-hidden="true">
-    <section class="hero">
-      <p class="tag">🦖 Birthday Mission</p>
-      <h1>Roarrr! Happy 23rd Birthday</h1>
-      <p class="subtitle" id="typeText"></p>
+    <section class="hero hero-world">
+      <div class="hero-copy">
+        <p class="tag">&#129430; Birthday World</p>
+        <h1>Happy 23rd Birthday, my favorite person in this whole little universe.</h1>
+        <p class="subtitle" id="typeText"></p>
+        <p class="hero-lead">This is your mission-complete world: soft memories, sweet chaos, and a few tiny dinosaur surprises saved just for you.</p>
 
-      <div class="actions">
-        <button id="songButton" class="btn">Play Song</button>
-        <button id="surpriseButton" class="btn btn-alt">Hatch 🦖 Surprise</button>
+        <div class="actions hero-actions">
+          <button id="songButton" class="btn">Play Birthday Song</button>
+          <button id="surpriseButton" class="btn btn-alt">Hatch a Surprise</button>
+          <button id="worldExploreButton" class="btn btn-soft">Explore Memory Cave</button>
+        </div>
+
+        <audio id="birthdaySong" src="assets/audio/happy-birthday.mp3" preload="auto"></audio>
       </div>
 
-      <audio id="birthdaySong" src="assets/audio/happy-birthday.mp3" preload="auto"></audio>
+      <aside class="hero-card" aria-label="Mission complete summary">
+        <p class="hero-card-tag">Mission Complete</p>
+        <h2>Welcome to your birthday world</h2>
+        <p class="hero-card-copy">Every gate, jump, and message was just the warm-up. This part is the real reward.</p>
+        <div class="hero-stats">
+          <article class="stat-card">
+            <strong>23</strong>
+            <span>reasons to celebrate you</span>
+          </article>
+          <article class="stat-card">
+            <strong id="galleryCount">7 memories</strong>
+            <span>waiting in the cave</span>
+          </article>
+          <article class="stat-card">
+            <strong id="songStatus">Soundtrack ready</strong>
+            <span>press play when you want the mood</span>
+          </article>
+        </div>
+      </aside>
     </section>
 
-    <section class="gallery-wrap">
-      <h2>Venezya 🦖 Memory Cave</h2>
-      <p class="hint">Tap a memory fossil</p>
+    <section class="moments-wrap">
+      <div class="section-head">
+        <p class="section-tag">Favorite Things</p>
+        <h2>Little moments that make you unforgettable</h2>
+        <p>Three quick highlights before we dive into the full memory cave.</p>
+      </div>
+      <div id="momentCards" class="moments-grid"></div>
+    </section>
+
+    <section class="gallery-wrap" id="memoryCave">
+      <div class="section-head section-head-split">
+        <div>
+          <p class="section-tag">Memory Cave</p>
+          <h2>Venezya's favorite fossil collection</h2>
+          <p>Tap a memory to open it bigger. This part should feel like walking through a soft, happy timeline.</p>
+        </div>
+        <div class="gallery-pill-wrap">
+          <p class="count-pill">Curated with love</p>
+        </div>
+      </div>
       <div id="gallery" class="gallery"></div>
+    </section>
+
+    <section class="reasons-wrap">
+      <div class="section-head">
+        <p class="section-tag">Why You</p>
+        <h2>Why this whole birthday mission exists in the first place</h2>
+        <p>Because the sweetest people deserve a world built around them, even if it comes with a few dinosaurs.</p>
+      </div>
+      <div id="reasonCards" class="reasons-grid"></div>
+    </section>
+
+    <section class="finale-wrap">
+      <div class="finale-card">
+        <p class="tag">Final Wish</p>
+        <h2>I hope this year feels bright, safe, exciting, and full of love.</h2>
+        <p>And whenever life gets loud, I hope you remember that you are loved deeply, celebrated fully, and worth every beautiful little surprise.</p>
+        <div class="actions finale-actions">
+          <button id="finalSurpriseButton" class="btn btn-alt">One More Surprise</button>
+          <button id="openGalleryButton" class="btn btn-soft">Open The Memory Cave</button>
+        </div>
+      </div>
     </section>
   </main>
 

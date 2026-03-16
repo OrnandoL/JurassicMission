@@ -1,0 +1,4 @@
+node_modules/
+npm-debug.log*
+preview-server.log
+preview-server.err.log

@@ -1,0 +1,13 @@
+{
+  "name": "birthday-site-try-jurassic",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "convert:images": "node scripts/convert-heic.mjs",
+    "preview": "node scripts/serve-preview.mjs"
+  },
+  "dependencies": {
+    "heic-convert": "^2.1.0",
+    "sharp": "^0.34.2"
+  }
+}

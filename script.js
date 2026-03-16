@@ -1,25 +1,67 @@
-const photoFiles = [
-  "assets/images/photo1.jpg",
-  "assets/images/photo2.jpg",
-  "assets/images/photo3.jpg",
-  "assets/images/photo4.jpg",
-  "assets/images/photo5.jpg",
-  "assets/images/photo6.jpg"
+const galleryPhotos = [
+  { src: "assets/images/photo1.jpg", alt: "Memory 1" },
+  { src: "assets/images/photo2.jpg", alt: "Memory 2" },
+  { src: "assets/images/photo3.jpg", alt: "Memory 3" },
+  { src: "assets/images/photo4.jpg", alt: "Memory 4" },
+  { src: "assets/images/photo5.jpg", alt: "Memory 5" },
+  { src: "assets/images/photo6.jpg", alt: "Memory 6" },
+  { src: "assets/images/photo7.jpg", alt: "Memory 7" }
 ];
 
 const loveLines = [
-  "You make my world brighter than a meteor shower.",
-  "Today we celebrate the cutest 🦖 queen turning 23.",
-  "Roaring happy birthday, Venezya Setiawan."
+  "Mission complete, birthday girl. This world is finally yours.",
+  "Today we celebrate the cutest dinosaur queen turning 23.",
+  "Every little surprise here was made to feel like you."
+];
+
+const spotlightMoments = [
+  {
+    tag: "Soft Energy",
+    title: "You make everything feel calmer",
+    body: "Even the loudest days feel easier when your warmth is somewhere inside them."
+  },
+  {
+    tag: "Main Character",
+    title: "You have the sweetest kind of glow",
+    body: "The kind that makes simple moments feel bright, memorable, and worth keeping."
+  },
+  {
+    tag: "Favorite Person",
+    title: "You are fun in the best way",
+    body: "Cute, playful, and unforgettable. Basically the reason this whole birthday mission exists."
+  }
+];
+
+const heartReasons = [
+  {
+    title: "You make ordinary moments feel important",
+    body: "That is such a rare gift, and it is one of the reasons people feel safe and happy around you."
+  },
+  {
+    title: "You carry softness and strength at the same time",
+    body: "You can be gentle without ever feeling small, and that balance is beautiful."
+  },
+  {
+    title: "You deserve a year full of good things",
+    body: "More peace, more laughter, more confidence, and more days that remind you how loved you are."
+  }
 ];
 
 const gallery = document.getElementById("gallery");
+const momentCards = document.getElementById("momentCards");
+const reasonCards = document.getElementById("reasonCards");
+const galleryCount = document.getElementById("galleryCount");
 const modal = document.getElementById("photoModal");
 const modalImage = document.getElementById("modalImage");
 const closeModal = document.getElementById("closeModal");
 const song = document.getElementById("birthdaySong");
 const songButton = document.getElementById("songButton");
+const songStatus = document.getElementById("songStatus");
 const surpriseButton = document.getElementById("surpriseButton");
+const worldExploreButton = document.getElementById("worldExploreButton");
+const finalSurpriseButton = document.getElementById("finalSurpriseButton");
+const openGalleryButton = document.getElementById("openGalleryButton");
+const memoryCave = document.getElementById("memoryCave");
 const typeText = document.getElementById("typeText");
 const gate = document.getElementById("gate");
 const dinoGate = document.getElementById("dinoGate");
@@ -41,25 +83,76 @@ const repoPreviewFrame = document.querySelector(".repo-preview-frame");
 
 const SITE_PASSWORD = "venez23";
 const TARGET_SCORE = 23;
+const DINO_WORLD = String.fromCodePoint(0x1f996);
 const isAdminMode = new URLSearchParams(window.location.search).get("admin") === "1";
 
 mainContent.classList.add("locked");
 gatePassword.focus();
 
-photoFiles.forEach((src, i) => {
-  const card = document.createElement("button");
-  card.className = "photo-card";
-  card.setAttribute("aria-label", `Open photo ${i + 1}`);
+populateCards();
+populateGallery();
+updateGalleryCount();
 
-  const img = document.createElement("img");
-  img.src = src;
-  img.alt = `Memory ${i + 1}`;
-  img.loading = "lazy";
+function populateCards() {
+  if (momentCards) {
+    spotlightMoments.forEach(({ tag, title, body }) => {
+      const article = document.createElement("article");
+      article.className = "moment-card";
+      article.innerHTML = `
+        <p class="section-tag">${tag}</p>
+        <h3>${title}</h3>
+        <p>${body}</p>
+      `;
+      momentCards.appendChild(article);
+    });
+  }
 
-  card.appendChild(img);
-  card.addEventListener("click", () => openModal(src, img.alt));
-  gallery.appendChild(card);
-});
+  if (reasonCards) {
+    heartReasons.forEach(({ title, body }) => {
+      const article = document.createElement("article");
+      article.className = "reason-card";
+      article.innerHTML = `
+        <p class="section-tag">Because</p>
+        <h3>${title}</h3>
+        <p>${body}</p>
+      `;
+      reasonCards.appendChild(article);
+    });
+  }
+}
+
+function populateGallery() {
+  galleryPhotos.forEach(({ src, alt }, index) => {
+    const card = document.createElement("button");
+    card.className = "photo-card";
+    card.classList.add("is-loading");
+    card.setAttribute("aria-label", `Open photo ${index + 1}`);
+
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = alt;
+    img.loading = "lazy";
+    img.decoding = "async";
+
+    img.addEventListener("load", () => {
+      card.classList.remove("is-loading");
+    });
+
+    img.addEventListener("error", () => {
+      card.remove();
+      console.warn(`Gallery image skipped because it could not be loaded: ${src}`);
+    });
+
+    card.appendChild(img);
+    card.addEventListener("click", () => openModal(src, alt));
+    gallery.appendChild(card);
+  });
+}
+
+function updateGalleryCount() {
+  if (!galleryCount) return;
+  galleryCount.textContent = `${galleryPhotos.length} memories waiting`;
+}
 
 function openModal(src, alt) {
   modalImage.src = src;
@@ -69,6 +162,10 @@ function openModal(src, alt) {
 
 function closePhoto() {
   modal.classList.remove("show");
+}
+
+function scrollToMemoryCave() {
+  memoryCave?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 closeModal.addEventListener("click", closePhoto);
@@ -84,19 +181,28 @@ songButton.addEventListener("click", async () => {
   if (song.paused) {
     try {
       await song.play();
-      songButton.textContent = "Pause Song";
+      songButton.textContent = "Pause Birthday Song";
+      if (songStatus) songStatus.textContent = "Soundtrack glowing";
     } catch {
       songButton.textContent = "Tap Again to Play";
+      if (songStatus) songStatus.textContent = "Soundtrack waiting";
     }
   } else {
     song.pause();
     songButton.textContent = "Play Birthday Song";
+    if (songStatus) songStatus.textContent = "Soundtrack paused";
   }
 });
 
 song.addEventListener("ended", () => {
   songButton.textContent = "Play Birthday Song";
+  if (songStatus) songStatus.textContent = "Soundtrack ready";
 });
+
+worldExploreButton?.addEventListener("click", scrollToMemoryCave);
+openGalleryButton?.addEventListener("click", scrollToMemoryCave);
+surpriseButton.addEventListener("click", megaSurprise);
+finalSurpriseButton?.addEventListener("click", megaSurprise);
 
 let lineIndex = 0;
 let charIndex = 0;
@@ -105,7 +211,7 @@ function typeWriter() {
   const current = loveLines[lineIndex];
   if (charIndex <= current.length) {
     typeText.textContent = current.slice(0, charIndex++);
-    setTimeout(typeWriter, 50);
+    setTimeout(typeWriter, 46);
     return;
   }
 
@@ -114,12 +220,8 @@ function typeWriter() {
     lineIndex = (lineIndex + 1) % loveLines.length;
     typeText.textContent = "";
     typeWriter();
-  }, 1400);
+  }, 1600);
 }
-
-surpriseButton.addEventListener("click", () => {
-  megaSurprise();
-});
 
 document.addEventListener("click", (e) => {
   if (mainContent.classList.contains("locked")) return;
@@ -151,7 +253,7 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 function burstConfetti(originX = canvas.width / 2, originY = canvas.height * 0.34, amount = 130) {
-  const colors = ["#2d6a4f", "#95d5b2", "#e9c46a", "#f4a261", "#e76f51"];
+  const colors = ["#3d6e58", "#93c88f", "#f0c05c", "#f2a97e", "#dc7f95"];
   for (let i = 0; i < amount; i++) {
     pieces.push({
       x: originX,
@@ -170,10 +272,10 @@ function shakeScreen(duration = 700) {
   setTimeout(() => document.body.classList.remove("screen-shake"), duration);
 }
 
-function showRoarBanner() {
+function showRoarBanner(text = "RAWR !!!") {
   const banner = document.createElement("div");
   banner.className = "roar-banner";
-  banner.textContent = "RAWR !!!";
+  banner.textContent = text;
   document.body.appendChild(banner);
   setTimeout(() => banner.remove(), 1300);
 }
@@ -265,8 +367,8 @@ function drawConfetti() {
 
 function unlockSite() {
   if (!gameWon) {
-    dinoMessage.textContent = `You must score ${TARGET_SCORE} first before entering \u{1F996} World.`;
-    window.alert(`Clear the game first. Reach score ${TARGET_SCORE} to unlock \u{1F996} World.`);
+    dinoMessage.textContent = `You must score ${TARGET_SCORE} first before entering ${DINO_WORLD} World.`;
+    window.alert(`Clear the game first. Reach score ${TARGET_SCORE} to unlock ${DINO_WORLD} World.`);
     return;
   }
 
@@ -311,7 +413,6 @@ function stopPreviewSong() {
     // Ignore cross-frame access issues.
   }
 
-  // Ensure embedded page is unloaded so hbd.mpeg cannot keep playing.
   repoPreviewFrame.src = "about:blank";
 }
 
@@ -321,12 +422,16 @@ function enterBirthdayWorld() {
   dinoGate.classList.add("hidden");
   codeGate.classList.add("hidden");
   mainContent.classList.remove("locked");
+  mainContent.classList.add("revealed");
   mainContent.setAttribute("aria-hidden", "false");
   gate.setAttribute("aria-hidden", "true");
   dinoGate.setAttribute("aria-hidden", "true");
   codeGate.setAttribute("aria-hidden", "true");
   gateError.textContent = "";
   gatePassword.value = "";
+  burstConfetti(canvas.width * 0.5, canvas.height * 0.22, 140);
+  spawnEggs(16, window.innerWidth / 2, window.innerHeight * 0.74, 180, 1200);
+  showRoarBanner("Birthday World");
 }
 
 function showDinoGate() {
@@ -382,6 +487,7 @@ let speed = 2.4;
 const gravity = 0.6;
 const jumpPower = -10.8;
 const groundY = dinoCanvas.height - 34;
+const dinoHitbox = { left: 6, right: 6, top: 5, bottom: 4 };
 
 function resetDinoGame() {
   obstacles.length = 0;
@@ -393,7 +499,7 @@ function resetDinoGame() {
   dino.y = groundY - dino.height;
   dino.vy = 0;
   dinoScore.textContent = `Score: ${gameScore} / ${TARGET_SCORE}`;
-  dinoMessage.textContent = "Press Space or tap the game to jump.";
+  dinoMessage.textContent = "Press Space or tap the game to help our birthday dino hop.";
   dinoContinueButton.classList.add("hidden");
   drawGame();
 }
@@ -411,7 +517,7 @@ function adminSkipDinoGame() {
   gameOver = false;
   gameScore = TARGET_SCORE;
   dinoScore.textContent = `Score: ${TARGET_SCORE} / ${TARGET_SCORE}`;
-  dinoMessage.textContent = "Admin bypass enabled. Entering \u{1F996} World.";
+  dinoMessage.textContent = "Admin bypass enabled. Our mascot is already ready for the next chapter.";
   dinoContinueButton.classList.remove("hidden");
   unlockSite();
 }
@@ -435,12 +541,12 @@ function spawnObstacle() {
 }
 
 function checkCollision(obs) {
-  const padding = 5;
+  const { left, right, top, bottom } = dinoHitbox;
   return (
-    dino.x + padding < obs.x + obs.width - padding &&
-    dino.x + dino.width - padding > obs.x + padding &&
-    dino.y + padding < obs.y + obs.height - padding &&
-    dino.y + dino.height - padding > obs.y + padding
+    dino.x + left < obs.x + obs.width &&
+    dino.x + dino.width - right > obs.x &&
+    dino.y + top < obs.y + obs.height &&
+    dino.y + dino.height - bottom > obs.y
   );
 }
 
@@ -468,7 +574,7 @@ function updateGame(delta) {
       if (gameScore >= TARGET_SCORE) {
         gameWon = true;
         gameRunning = false;
-        dinoMessage.textContent = "You reached 23 jumps. Click Enter \u{1F996} World to continue.";
+        dinoMessage.textContent = `She made all 23 jumps. Click Enter ${DINO_WORLD} World to continue.`;
         dinoContinueButton.classList.remove("hidden");
         dinoContinueButton.focus();
       }
@@ -482,71 +588,199 @@ function updateGame(delta) {
   if (!gameWon && obstacles.some(checkCollision)) {
     gameOver = true;
     gameRunning = false;
-    dinoMessage.textContent = "Oops, 🦖 crashed. Press Restart Game and try again.";
+    dinoMessage.textContent = "Almost there. Press Restart Game and help her try again.";
   }
 }
 
-function drawGame() {
-  dinoCtx.clearRect(0, 0, dinoCanvas.width, dinoCanvas.height);
-
+function drawGround() {
   dinoCtx.strokeStyle = "#355f4a";
   dinoCtx.lineWidth = 2;
   dinoCtx.beginPath();
   dinoCtx.moveTo(0, groundY + 1);
   dinoCtx.lineTo(dinoCanvas.width, groundY + 1);
   dinoCtx.stroke();
+}
 
-  const bodyX = dino.x;
-  const bodyY = dino.y;
-  const bodyW = dino.width;
-  const bodyH = dino.height;
-  const centerX = bodyX + bodyW * 0.5;
-  const centerY = bodyY + bodyH * 0.58;
+function drawObstacle(obs) {
+  dinoCtx.fillStyle = "#4e8a6a";
+  dinoCtx.fillRect(obs.x, obs.y, obs.width, obs.height);
+}
 
-  dinoCtx.fillStyle = "#5fbf7f";
+function drawDinoShadow(time) {
+  const bob = Math.sin(time / 240) * 0.8;
+  const airborneLift = Math.max(0, groundY - dino.height - dino.y);
+  const shadowScale = Math.max(0.62, 1 - airborneLift / 90);
+  dinoCtx.fillStyle = "rgba(22, 46, 33, 0.16)";
   dinoCtx.beginPath();
-  dinoCtx.ellipse(centerX, centerY, bodyW * 0.52, bodyH * 0.46, 0, 0, Math.PI * 2);
+  dinoCtx.ellipse(
+    dino.x + dino.width * 0.5,
+    groundY + 3 - bob * 0.2,
+    dino.width * 0.42 * shadowScale,
+    3.2 * shadowScale,
+    0,
+    0,
+    Math.PI * 2
+  );
   dinoCtx.fill();
+}
 
-  dinoCtx.fillStyle = "#72cf90";
+function drawDinoTail(bodyW, bodyH) {
+  dinoCtx.fillStyle = "#4d9d6a";
   dinoCtx.beginPath();
-  dinoCtx.ellipse(bodyX + bodyW * 0.68, bodyY + bodyH * 0.28, bodyW * 0.28, bodyH * 0.25, 0, 0, Math.PI * 2);
-  dinoCtx.fill();
-
-  dinoCtx.fillStyle = "#4f9b68";
-  dinoCtx.beginPath();
-  dinoCtx.moveTo(bodyX + bodyW * 0.04, bodyY + bodyH * 0.72);
-  dinoCtx.lineTo(bodyX - bodyW * 0.22, bodyY + bodyH * 0.58);
-  dinoCtx.lineTo(bodyX + bodyW * 0.08, bodyY + bodyH * 0.46);
+  dinoCtx.moveTo(-bodyW * 0.16, bodyH * 0.06);
+  dinoCtx.lineTo(-bodyW * 0.6, -bodyH * 0.05);
+  dinoCtx.lineTo(-bodyW * 0.26, -bodyH * 0.22);
   dinoCtx.closePath();
   dinoCtx.fill();
+}
 
-  dinoCtx.fillStyle = "#4f9b68";
-  dinoCtx.fillRect(bodyX + bodyW * 0.3, bodyY + bodyH * 0.88, bodyW * 0.17, bodyH * 0.14);
-  dinoCtx.fillRect(bodyX + bodyW * 0.56, bodyY + bodyH * 0.88, bodyW * 0.17, bodyH * 0.14);
-
-  dinoCtx.fillStyle = "#1f3b2b";
+function drawDinoLegs(bodyW, bodyH) {
+  dinoCtx.fillStyle = "#4d9d6a";
   dinoCtx.beginPath();
-  dinoCtx.arc(bodyX + bodyW * 0.76, bodyY + bodyH * 0.25, 2.2, 0, Math.PI * 2);
+  dinoCtx.roundRect(-bodyW * 0.12, bodyH * 0.22, bodyW * 0.18, bodyH * 0.2, 3);
+  dinoCtx.roundRect(bodyW * 0.12, bodyH * 0.22, bodyW * 0.18, bodyH * 0.2, 3);
+  dinoCtx.fill();
+}
+
+function drawDinoBody(bodyW, bodyH) {
+  dinoCtx.fillStyle = "#62bd7b";
+  dinoCtx.beginPath();
+  dinoCtx.ellipse(0, bodyH * 0.02, bodyW * 0.42, bodyH * 0.36, -0.08, 0, Math.PI * 2);
   dinoCtx.fill();
 
-  dinoCtx.fillStyle = "#ff8fb0";
+  dinoCtx.fillStyle = "#8bd09c";
   dinoCtx.beginPath();
-  dinoCtx.arc(bodyX + bodyW * 0.69, bodyY + bodyH * 0.33, 2.6, 0, Math.PI * 2);
+  dinoCtx.ellipse(bodyW * 0.16, bodyH * 0.02, bodyW * 0.23, bodyH * 0.24, -0.08, 0, Math.PI * 2);
   dinoCtx.fill();
 
-  dinoCtx.fillStyle = "#f46c98";
+  dinoCtx.fillStyle = "#70ca8a";
   dinoCtx.beginPath();
-  dinoCtx.arc(bodyX + bodyW * 0.81, bodyY + bodyH * 0.08, 3.1, 0, Math.PI * 2);
-  dinoCtx.arc(bodyX + bodyW * 0.69, bodyY + bodyH * 0.08, 3.1, 0, Math.PI * 2);
+  dinoCtx.ellipse(bodyW * 0.24, -bodyH * 0.24, bodyW * 0.27, bodyH * 0.24, -0.08, 0, Math.PI * 2);
   dinoCtx.fill();
-  dinoCtx.fillStyle = "#f7a6c2";
-  dinoCtx.fillRect(bodyX + bodyW * 0.72, bodyY + bodyH * 0.06, 3.4, 4.2);
+}
 
-  dinoCtx.fillStyle = "#4e8a6a";
-  obstacles.forEach((obs) => {
-    dinoCtx.fillRect(obs.x, obs.y, obs.width, obs.height);
-  });
+function drawDinoHair(bodyW, bodyH) {
+  dinoCtx.fillStyle = "#5b423e";
+  dinoCtx.beginPath();
+  dinoCtx.ellipse(bodyW * 0.12, -bodyH * 0.24, bodyW * 0.16, bodyH * 0.16, 0.1, 0, Math.PI * 2);
+  dinoCtx.ellipse(bodyW * 0.01, -bodyH * 0.14, bodyW * 0.15, bodyH * 0.2, -0.2, 0, Math.PI * 2);
+  dinoCtx.fill();
+}
+
+function drawDinoHat(bodyW, bodyH) {
+  dinoCtx.fillStyle = "#efb346";
+  dinoCtx.beginPath();
+  dinoCtx.ellipse(bodyW * 0.16, -bodyH * 0.38, bodyW * 0.28, bodyH * 0.18, -0.1, Math.PI, 0, false);
+  dinoCtx.fill();
+
+  dinoCtx.fillStyle = "#db9439";
+  dinoCtx.beginPath();
+  dinoCtx.ellipse(bodyW * 0.22, -bodyH * 0.29, bodyW * 0.23, bodyH * 0.08, -0.1, 0, Math.PI * 2);
+  dinoCtx.fill();
+
+  dinoCtx.fillStyle = "#fff8ed";
+  dinoCtx.beginPath();
+  dinoCtx.arc(bodyW * 0.18, -bodyH * 0.39, bodyW * 0.1, 0, Math.PI * 2);
+  dinoCtx.fill();
+
+  dinoCtx.strokeStyle = "#d94437";
+  dinoCtx.lineWidth = 1.5;
+  dinoCtx.lineCap = "round";
+  dinoCtx.beginPath();
+  dinoCtx.moveTo(bodyW * 0.11, -bodyH * 0.37);
+  dinoCtx.lineTo(bodyW * 0.15, -bodyH * 0.43);
+  dinoCtx.lineTo(bodyW * 0.18, -bodyH * 0.39);
+  dinoCtx.lineTo(bodyW * 0.21, -bodyH * 0.43);
+  dinoCtx.lineTo(bodyW * 0.25, -bodyH * 0.37);
+  dinoCtx.stroke();
+}
+
+function drawDinoFace(bodyW, bodyH, time) {
+  const blinkWindow = time % 3200;
+  const isBlinking = blinkWindow > 2660 && blinkWindow < 2860;
+  const blushPulse = 1 + Math.sin(time / 260) * 0.08;
+
+  dinoCtx.fillStyle = "#ffb0a1";
+  dinoCtx.beginPath();
+  dinoCtx.ellipse(
+    bodyW * 0.18,
+    -bodyH * 0.18,
+    bodyW * 0.08 * blushPulse,
+    bodyH * 0.05 * blushPulse,
+    0,
+    0,
+    Math.PI * 2
+  );
+  dinoCtx.fill();
+
+  dinoCtx.strokeStyle = "#2a332f";
+  dinoCtx.lineWidth = 1.2;
+  dinoCtx.lineCap = "round";
+  dinoCtx.beginPath();
+  if (isBlinking) {
+    dinoCtx.moveTo(bodyW * 0.24, -bodyH * 0.26);
+    dinoCtx.lineTo(bodyW * 0.34, -bodyH * 0.26);
+  } else {
+    dinoCtx.ellipse(bodyW * 0.29, -bodyH * 0.26, bodyW * 0.045, bodyH * 0.04, 0, Math.PI * 0.1, Math.PI * 0.9);
+  }
+  dinoCtx.stroke();
+
+  dinoCtx.fillStyle = "#2a332f";
+  dinoCtx.beginPath();
+  dinoCtx.arc(bodyW * 0.42, -bodyH * 0.18, bodyW * 0.025, 0, Math.PI * 2);
+  dinoCtx.fill();
+
+  dinoCtx.strokeStyle = "#6a564d";
+  dinoCtx.lineWidth = 1;
+  dinoCtx.beginPath();
+  dinoCtx.moveTo(bodyW * 0.3, -bodyH * 0.1);
+  dinoCtx.quadraticCurveTo(bodyW * 0.35, -bodyH * 0.04, bodyW * 0.42, -bodyH * 0.09);
+  dinoCtx.stroke();
+}
+
+function drawCuteDino(time) {
+  const onGround = dino.y >= groundY - dino.height - 0.1;
+  const bob = onGround ? Math.sin(time / 240) * 0.8 : 0;
+  let scaleX = 1;
+  let scaleY = 1;
+
+  if (!onGround) {
+    if (dino.vy < 0) {
+      scaleX = 0.96;
+      scaleY = 1.06;
+    } else {
+      scaleX = 1.05;
+      scaleY = 0.95;
+    }
+  } else if (gameRunning) {
+    scaleX = 1.01;
+    scaleY = 0.99;
+  }
+
+  const bodyW = dino.width;
+  const bodyH = dino.height;
+  const centerX = dino.x + bodyW * 0.5;
+  const centerY = dino.y + bodyH * 0.5 + bob;
+
+  drawDinoShadow(time);
+
+  dinoCtx.save();
+  dinoCtx.translate(centerX, centerY);
+  dinoCtx.scale(scaleX, scaleY);
+  drawDinoTail(bodyW, bodyH);
+  drawDinoLegs(bodyW, bodyH);
+  drawDinoBody(bodyW, bodyH);
+  drawDinoHair(bodyW, bodyH);
+  drawDinoHat(bodyW, bodyH);
+  drawDinoFace(bodyW, bodyH, time);
+  dinoCtx.restore();
+}
+
+function drawGame() {
+  dinoCtx.clearRect(0, 0, dinoCanvas.width, dinoCanvas.height);
+  drawGround();
+  drawCuteDino(lastFrame || 0);
+  obstacles.forEach(drawObstacle);
 }
 
 function gameLoop(ts) {
@@ -585,6 +819,7 @@ window.addEventListener("message", (event) => {
     lockCodeGateContinue();
   }
 });
+
 dinoCanvas.addEventListener("pointerdown", jumpDino);
 document.addEventListener("keydown", (e) => {
   if (dinoGate.classList.contains("hidden")) return;
@@ -600,6 +835,4 @@ requestAnimationFrame(gameLoop);
 
 drawConfetti();
 typeWriter();
-setTimeout(burstConfetti, 500);
-
-
+setTimeout(() => burstConfetti(canvas.width * 0.5, canvas.height * 0.22, 70), 500);

@@ -27,8 +27,18 @@ Interactive birthday website with a mission-style flow:
 
 ## Local Run
 1. Open folder `birthday-site-try-jurassic`
-2. Run with Live Server (recommended), or open `index.html` directly
-3. Use password from `script.js` (`SITE_PASSWORD`)
+2. Run `npm install` once
+3. Run `npm run preview`
+4. Open `http://127.0.0.1:8123/`
+5. Use password from `script.js` (`SITE_PASSWORD`)
+
+Quick links:
+- Main site: `http://127.0.0.1:8123/`
+- Embedded chapter: `http://127.0.0.1:8123/happybirthday/`
+
+Optional:
+- You can still use Live Server if you prefer
+- You can override the port with `npm run preview -- 9000`
 
 ## Test/Admin Bypass
 Add `?admin=1` to URL to reveal admin skip button on the dino gate.
@@ -42,10 +52,21 @@ Example:
 - Rotating love lines: `script.js` -> `loveLines`
 - Photos:
   - Place files in `assets/images/`
-  - Update `script.js` -> `photoFiles`
+  - If the new photos are `.HEIC`, run `npm run convert:images` to generate web-safe `.jpg` copies
+  - Update `script.js` -> `galleryPhotos` if you want to add or reorder gallery items
 - Main birthday song:
   - Path: `assets/audio/happy-birthday.mp3`
   - Control button in hero section
+
+### HEIC workflow
+1. Drop `.HEIC` photos into `assets/images/`
+2. Run `npm install`
+3. Run `npm run convert:images`
+4. Use the generated `.jpg` files in the gallery manifest
+
+Notes:
+- Original `.HEIC` files stay as source assets
+- The website should reference the generated `.jpg` files for best browser compatibility
 
 ### Embedded code mission (`happybirthday`)
 - Header name/status and chat content: `happybirthday/index.html`
