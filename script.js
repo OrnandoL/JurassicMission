@@ -80,6 +80,7 @@ const codeGateContinueButton = document.getElementById("codeGateContinueButton")
 const missionProgressFill = document.getElementById("missionProgressFill");
 const missionProgressText = document.getElementById("missionProgressText");
 const repoPreviewFrame = document.querySelector(".repo-preview-frame");
+const codeMissionSong = document.getElementById("codeMissionSong");
 
 const SITE_PASSWORD = "venez23";
 const TARGET_SCORE = 23;
@@ -179,24 +180,15 @@ document.addEventListener("keydown", (e) => {
 
 songButton.addEventListener("click", async () => {
   if (song.paused) {
-    try {
-      await song.play();
-      songButton.textContent = "Pause Birthday Song";
-      if (songStatus) songStatus.textContent = "Soundtrack glowing";
-    } catch {
-      songButton.textContent = "Tap Again to Play";
-      if (songStatus) songStatus.textContent = "Soundtrack waiting";
-    }
+    await playBirthdaySong();
   } else {
     song.pause();
-    songButton.textContent = "Play Birthday Song";
-    if (songStatus) songStatus.textContent = "Soundtrack paused";
+    setBirthdaySongUi("paused");
   }
 });
 
 song.addEventListener("ended", () => {
-  songButton.textContent = "Play Birthday Song";
-  if (songStatus) songStatus.textContent = "Soundtrack ready";
+  setBirthdaySongUi("ready");
 });
 
 worldExploreButton?.addEventListener("click", scrollToMemoryCave);
@@ -302,10 +294,9 @@ function megaSurprise() {
 }
 
 function playCuteRoar() {
-  const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  if (!AudioCtx) return;
+  const ctxAudio = getSharedAudioContext();
+  if (!ctxAudio) return;
 
-  const ctxAudio = new AudioCtx();
   const now = ctxAudio.currentTime;
   const master = ctxAudio.createGain();
   master.gain.setValueAtTime(0.0001, now);
@@ -342,10 +333,6 @@ function playCuteRoar() {
   chirp.start(now + 0.28);
   roar.stop(now + 0.82);
   chirp.stop(now + 0.8);
-
-  setTimeout(() => {
-    ctxAudio.close();
-  }, 1000);
 }
 
 function drawConfetti() {
@@ -398,6 +385,11 @@ function unlockCodeGateContinue() {
 }
 
 function stopPreviewSong() {
+  if (codeMissionSong) {
+    codeMissionSong.pause();
+    codeMissionSong.currentTime = 0;
+  }
+
   if (!repoPreviewFrame) return;
 
   try {
@@ -416,7 +408,7 @@ function stopPreviewSong() {
   repoPreviewFrame.src = "about:blank";
 }
 
-function enterBirthdayWorld() {
+async function enterBirthdayWorld() {
   stopPreviewSong();
   gate.classList.add("hidden");
   dinoGate.classList.add("hidden");
@@ -432,6 +424,7 @@ function enterBirthdayWorld() {
   burstConfetti(canvas.width * 0.5, canvas.height * 0.22, 140);
   spawnEggs(16, window.innerWidth / 2, window.innerHeight * 0.74, 180, 1200);
   showRoarBanner("Birthday World");
+  await playBirthdaySong();
 }
 
 function showDinoGate() {
@@ -454,6 +447,10 @@ function showCodeGate() {
   codeGate.setAttribute("aria-hidden", "false");
   setCodeMissionProgress(0);
   lockCodeGateContinue();
+  if (codeMissionSong) {
+    codeMissionSong.currentTime = 0;
+    codeMissionSong.play().catch(() => {});
+  }
   if (repoPreviewFrame) {
     repoPreviewFrame.src = `./happybirthday/index.html?embedded=1&t=${Date.now()}`;
   }
@@ -488,6 +485,134 @@ const gravity = 0.6;
 const jumpPower = -10.8;
 const groundY = dinoCanvas.height - 34;
 const dinoHitbox = { left: 6, right: 6, top: 5, bottom: 4 };
+let crashSfxPlayed = false;
+let sharedAudioContext = null;
+
+function setBirthdaySongUi(state) {
+  if (!songButton || !songStatus) return;
+
+  if (state === "playing") {
+    songButton.textContent = "Pause Birthday Song";
+    songStatus.textContent = "Soundtrack glowing";
+    return;
+  }
+
+  if (state === "waiting") {
+    songButton.textContent = "Tap Again to Play";
+    songStatus.textContent = "Soundtrack waiting";
+    return;
+  }
+
+  if (state === "paused") {
+    songButton.textContent = "Play Birthday Song";
+    songStatus.textContent = "Soundtrack paused";
+    return;
+  }
+
+  songButton.textContent = "Play Birthday Song";
+  songStatus.textContent = "Soundtrack ready";
+}
+
+async function playBirthdaySong() {
+  if (!song) return false;
+
+  try {
+    await song.play();
+    setBirthdaySongUi("playing");
+    return true;
+  } catch {
+    setBirthdaySongUi("waiting");
+    return false;
+  }
+}
+
+function getSharedAudioContext() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+
+  if (!sharedAudioContext || sharedAudioContext.state === "closed") {
+    sharedAudioContext = new AudioCtx();
+  }
+
+  if (sharedAudioContext.state === "suspended") {
+    sharedAudioContext.resume().catch(() => {});
+  }
+
+  return sharedAudioContext;
+}
+
+function playJumpSfx() {
+  const audioContext = getSharedAudioContext();
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+  const gain = audioContext.createGain();
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.06, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+  gain.connect(audioContext.destination);
+
+  const chirp = audioContext.createOscillator();
+  chirp.type = "triangle";
+  chirp.frequency.setValueAtTime(420, now);
+  chirp.frequency.exponentialRampToValueAtTime(760, now + 0.12);
+  chirp.frequency.exponentialRampToValueAtTime(620, now + 0.22);
+
+  const shimmer = audioContext.createOscillator();
+  shimmer.type = "sine";
+  shimmer.frequency.setValueAtTime(900, now + 0.03);
+  shimmer.frequency.exponentialRampToValueAtTime(1180, now + 0.16);
+
+  const shimmerGain = audioContext.createGain();
+  shimmerGain.gain.setValueAtTime(0.0001, now);
+  shimmerGain.gain.exponentialRampToValueAtTime(0.028, now + 0.05);
+  shimmerGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+  chirp.connect(gain);
+  shimmer.connect(shimmerGain);
+  shimmerGain.connect(audioContext.destination);
+
+  chirp.start(now);
+  shimmer.start(now + 0.02);
+  chirp.stop(now + 0.24);
+  shimmer.stop(now + 0.19);
+}
+
+function playCrashSfx() {
+  const audioContext = getSharedAudioContext();
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+  const gain = audioContext.createGain();
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.09, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.34);
+  gain.connect(audioContext.destination);
+
+  const bonk = audioContext.createOscillator();
+  bonk.type = "square";
+  bonk.frequency.setValueAtTime(210, now);
+  bonk.frequency.exponentialRampToValueAtTime(118, now + 0.18);
+
+  const wobble = audioContext.createOscillator();
+  wobble.type = "triangle";
+  wobble.frequency.setValueAtTime(132, now);
+  wobble.frequency.exponentialRampToValueAtTime(78, now + 0.28);
+
+  const wobbleGain = audioContext.createGain();
+  wobbleGain.gain.setValueAtTime(0.0001, now);
+  wobbleGain.gain.exponentialRampToValueAtTime(0.045, now + 0.03);
+  wobbleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
+
+  bonk.connect(gain);
+  wobble.connect(wobbleGain);
+  wobbleGain.connect(audioContext.destination);
+
+  bonk.start(now);
+  wobble.start(now + 0.01);
+  bonk.stop(now + 0.24);
+  wobble.stop(now + 0.34);
+}
 
 function resetDinoGame() {
   obstacles.length = 0;
@@ -496,6 +621,7 @@ function resetDinoGame() {
   speed = 2.4;
   gameOver = false;
   gameWon = false;
+  crashSfxPlayed = false;
   dino.y = groundY - dino.height;
   dino.vy = 0;
   dinoScore.textContent = `Score: ${gameScore} / ${TARGET_SCORE}`;
@@ -525,7 +651,10 @@ function adminSkipDinoGame() {
 function jumpDino() {
   if (!gameRunning || gameOver || gameWon) return;
   const onGround = dino.y >= groundY - dino.height - 0.1;
-  if (onGround) dino.vy = jumpPower;
+  if (onGround) {
+    dino.vy = jumpPower;
+    playJumpSfx();
+  }
 }
 
 function spawnObstacle() {
@@ -588,6 +717,10 @@ function updateGame(delta) {
   if (!gameWon && obstacles.some(checkCollision)) {
     gameOver = true;
     gameRunning = false;
+    if (!crashSfxPlayed) {
+      crashSfxPlayed = true;
+      playCrashSfx();
+    }
     dinoMessage.textContent = "Almost there. Press Restart Game and help her try again.";
   }
 }

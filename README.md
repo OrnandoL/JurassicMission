@@ -55,7 +55,7 @@ Example:
   - If the new photos are `.HEIC`, run `npm run convert:images` to generate web-safe `.jpg` copies
   - Update `script.js` -> `galleryPhotos` if you want to add or reorder gallery items
 - Main birthday song:
-  - Path: `assets/audio/happy-birthday.mp3`
+  - Path: `assets/audio/happybirthday.mp3`
   - Control button in hero section
 
 ### HEIC workflow

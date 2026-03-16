@@ -11,9 +11,11 @@ if (isEmbedded) {
 
 window.addEventListener("load", async () => {
     startTimelineOnce();
-    const autoplayWorked = await tryPlaySong();
-    if (!autoplayWorked) {
-        showMusicChip("Play music");
+    if (!isEmbedded) {
+        const autoplayWorked = await tryPlaySong();
+        if (!autoplayWorked) {
+            showMusicChip("Play music");
+        }
     }
 });
 
