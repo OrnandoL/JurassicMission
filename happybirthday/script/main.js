@@ -132,16 +132,12 @@ const animationTimeline = () => {
 
     if (isEmbedded) {
         tl.set(".one, .three", { autoAlpha: 0 })
-        .set(".four", { autoAlpha: 1 })
-        .from(".chapter-intro", 0.45, {
-            y: 8,
-            opacity: 0.45
-        })
+        .set(".message-stage", { autoAlpha: 1 })
         .from(".text-box", 0.5, {
             y: 16,
             scale: 0.98,
             opacity: 0.35
-        }, "-=0.18")
+        })
         .from(".fake-btn", 0.18, {
             scale: 0.9,
             opacity: 0
@@ -152,7 +148,7 @@ const animationTimeline = () => {
         .to(".fake-btn", 0.1, {
             backgroundColor: "rgb(127, 206, 248)"
         }, "+=2.2")
-        .to(".four", 0.42, {
+        .to(".message-stage", 0.42, {
             scale: 0.92,
             opacity: 0,
             y: -80
@@ -182,7 +178,7 @@ const animationTimeline = () => {
             opacity: 0,
             y: 10
         }, "+=2.6")
-        .from(".four", 0.55, {
+        .from(".message-stage", 0.55, {
             scale: 0.96,
             y: 14,
             opacity: 0.32
@@ -197,7 +193,7 @@ const animationTimeline = () => {
         .to(".fake-btn", 0.1, {
             backgroundColor: "rgb(127, 206, 248)"
         }, "+=4")
-        .to(".four", 0.45, {
+        .to(".message-stage", 0.45, {
             scale: 0.88,
             opacity: 0,
             y: -150
