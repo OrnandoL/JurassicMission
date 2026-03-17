@@ -21,6 +21,7 @@ const closeModal = document.getElementById("closeModal");
 const song = document.getElementById("birthdaySong");
 const songButton = document.getElementById("songButton");
 const surpriseButton = document.getElementById("surpriseButton");
+const finalWishButton = document.getElementById("finalWishButton");
 const typeText = document.getElementById("typeText");
 const gate = document.getElementById("gate");
 const dinoGate = document.getElementById("dinoGate");
@@ -110,9 +111,15 @@ async function playBirthdaySong() {
 
 let lineIndex = 0;
 let charIndex = 0;
+const storyLines = [
+  "You made it here, and this little birthday world is all for you.",
+  "I wanted this mission to feel like a soft celebration from start to finish.",
+  "Happy 23rd birthday, Venezya. I hope today feels warm, lovely, and unforgettable.",
+  "Scroll slowly, smile often, and keep every tiny roar of joy."
+];
 
 function typeWriter() {
-  const current = loveLines[lineIndex];
+  const current = storyLines[lineIndex];
   if (charIndex <= current.length) {
     typeText.textContent = current.slice(0, charIndex++);
     setTimeout(typeWriter, 50);
@@ -121,13 +128,17 @@ function typeWriter() {
 
   setTimeout(() => {
     charIndex = 0;
-    lineIndex = (lineIndex + 1) % loveLines.length;
+    lineIndex = (lineIndex + 1) % storyLines.length;
     typeText.textContent = "";
     typeWriter();
   }, 1400);
 }
 
 surpriseButton.addEventListener("click", () => {
+  megaSurprise();
+});
+
+finalWishButton?.addEventListener("click", () => {
   megaSurprise();
 });
 
