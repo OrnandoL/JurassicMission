@@ -1,67 +1,26 @@
-const galleryPhotos = [
-  { src: "assets/images/photo1.jpg", alt: "Memory 1" },
-  { src: "assets/images/photo2.jpg", alt: "Memory 2" },
-  { src: "assets/images/photo3.jpg", alt: "Memory 3" },
-  { src: "assets/images/photo4.jpg", alt: "Memory 4" },
-  { src: "assets/images/photo5.jpg", alt: "Memory 5" },
-  { src: "assets/images/photo6.jpg", alt: "Memory 6" },
-  { src: "assets/images/photo7.jpg", alt: "Memory 7" }
+const photoFiles = [
+  "assets/images/photo1.jpg",
+  "assets/images/photo2.jpg",
+  "assets/images/photo3.jpg",
+  "assets/images/photo4.jpg",
+  "assets/images/photo5.jpg",
+  "assets/images/photo6.jpg",
+  "assets/images/photo7.jpg"
 ];
 
 const loveLines = [
-  "Mission complete, birthday girl. This world is finally yours.",
-  "Today we celebrate the cutest dinosaur queen turning 23.",
-  "Every little surprise here was made to feel like you."
-];
-
-const spotlightMoments = [
-  {
-    tag: "Soft Energy",
-    title: "You make everything feel calmer",
-    body: "Even the loudest days feel easier when your warmth is somewhere inside them."
-  },
-  {
-    tag: "Main Character",
-    title: "You have the sweetest kind of glow",
-    body: "The kind that makes simple moments feel bright, memorable, and worth keeping."
-  },
-  {
-    tag: "Favorite Person",
-    title: "You are fun in the best way",
-    body: "Cute, playful, and unforgettable. Basically the reason this whole birthday mission exists."
-  }
-];
-
-const heartReasons = [
-  {
-    title: "You make ordinary moments feel important",
-    body: "That is such a rare gift, and it is one of the reasons people feel safe and happy around you."
-  },
-  {
-    title: "You carry softness and strength at the same time",
-    body: "You can be gentle without ever feeling small, and that balance is beautiful."
-  },
-  {
-    title: "You deserve a year full of good things",
-    body: "More peace, more laughter, more confidence, and more days that remind you how loved you are."
-  }
+  "You make my world brighter than a meteor shower.",
+  "Today we celebrate the cutest 🦖 queen turning 23.",
+  "Roaring happy birthday, Venezya Setiawan."
 ];
 
 const gallery = document.getElementById("gallery");
-const momentCards = document.getElementById("momentCards");
-const reasonCards = document.getElementById("reasonCards");
-const galleryCount = document.getElementById("galleryCount");
 const modal = document.getElementById("photoModal");
 const modalImage = document.getElementById("modalImage");
 const closeModal = document.getElementById("closeModal");
 const song = document.getElementById("birthdaySong");
 const songButton = document.getElementById("songButton");
-const songStatus = document.getElementById("songStatus");
 const surpriseButton = document.getElementById("surpriseButton");
-const worldExploreButton = document.getElementById("worldExploreButton");
-const finalSurpriseButton = document.getElementById("finalSurpriseButton");
-const openGalleryButton = document.getElementById("openGalleryButton");
-const memoryCave = document.getElementById("memoryCave");
 const typeText = document.getElementById("typeText");
 const gate = document.getElementById("gate");
 const dinoGate = document.getElementById("dinoGate");
@@ -81,79 +40,30 @@ const missionProgressFill = document.getElementById("missionProgressFill");
 const missionProgressText = document.getElementById("missionProgressText");
 const repoPreviewFrame = document.querySelector(".repo-preview-frame");
 const codeMissionSong = document.getElementById("codeMissionSong");
+const dinoAvatar = new Image();
+dinoAvatar.src = "assets/images/photo2.jpg";
 
 const SITE_PASSWORD = "venez23";
 const TARGET_SCORE = 23;
-const DINO_WORLD = String.fromCodePoint(0x1f996);
 const isAdminMode = new URLSearchParams(window.location.search).get("admin") === "1";
 
 mainContent.classList.add("locked");
 gatePassword.focus();
 
-populateCards();
-populateGallery();
-updateGalleryCount();
+photoFiles.forEach((src, i) => {
+  const card = document.createElement("button");
+  card.className = "photo-card";
+  card.setAttribute("aria-label", `Open photo ${i + 1}`);
 
-function populateCards() {
-  if (momentCards) {
-    spotlightMoments.forEach(({ tag, title, body }) => {
-      const article = document.createElement("article");
-      article.className = "moment-card";
-      article.innerHTML = `
-        <p class="section-tag">${tag}</p>
-        <h3>${title}</h3>
-        <p>${body}</p>
-      `;
-      momentCards.appendChild(article);
-    });
-  }
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = `Memory ${i + 1}`;
+  img.loading = "lazy";
 
-  if (reasonCards) {
-    heartReasons.forEach(({ title, body }) => {
-      const article = document.createElement("article");
-      article.className = "reason-card";
-      article.innerHTML = `
-        <p class="section-tag">Because</p>
-        <h3>${title}</h3>
-        <p>${body}</p>
-      `;
-      reasonCards.appendChild(article);
-    });
-  }
-}
-
-function populateGallery() {
-  galleryPhotos.forEach(({ src, alt }, index) => {
-    const card = document.createElement("button");
-    card.className = "photo-card";
-    card.classList.add("is-loading");
-    card.setAttribute("aria-label", `Open photo ${index + 1}`);
-
-    const img = document.createElement("img");
-    img.src = src;
-    img.alt = alt;
-    img.loading = "lazy";
-    img.decoding = "async";
-
-    img.addEventListener("load", () => {
-      card.classList.remove("is-loading");
-    });
-
-    img.addEventListener("error", () => {
-      card.remove();
-      console.warn(`Gallery image skipped because it could not be loaded: ${src}`);
-    });
-
-    card.appendChild(img);
-    card.addEventListener("click", () => openModal(src, alt));
-    gallery.appendChild(card);
-  });
-}
-
-function updateGalleryCount() {
-  if (!galleryCount) return;
-  galleryCount.textContent = `${galleryPhotos.length} memories waiting`;
-}
+  card.appendChild(img);
+  card.addEventListener("click", () => openModal(src, img.alt));
+  gallery.appendChild(card);
+});
 
 function openModal(src, alt) {
   modalImage.src = src;
@@ -163,10 +73,6 @@ function openModal(src, alt) {
 
 function closePhoto() {
   modal.classList.remove("show");
-}
-
-function scrollToMemoryCave() {
-  memoryCave?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 closeModal.addEventListener("click", closePhoto);
@@ -183,18 +89,24 @@ songButton.addEventListener("click", async () => {
     await playBirthdaySong();
   } else {
     song.pause();
-    setBirthdaySongUi("paused");
+    songButton.textContent = "Play Song";
   }
 });
 
 song.addEventListener("ended", () => {
-  setBirthdaySongUi("ready");
+  songButton.textContent = "Play Song";
 });
 
-worldExploreButton?.addEventListener("click", scrollToMemoryCave);
-openGalleryButton?.addEventListener("click", scrollToMemoryCave);
-surpriseButton.addEventListener("click", megaSurprise);
-finalSurpriseButton?.addEventListener("click", megaSurprise);
+async function playBirthdaySong() {
+  try {
+    await song.play();
+    songButton.textContent = "Pause Song";
+    return true;
+  } catch {
+    songButton.textContent = "Tap Again to Play";
+    return false;
+  }
+}
 
 let lineIndex = 0;
 let charIndex = 0;
@@ -203,7 +115,7 @@ function typeWriter() {
   const current = loveLines[lineIndex];
   if (charIndex <= current.length) {
     typeText.textContent = current.slice(0, charIndex++);
-    setTimeout(typeWriter, 46);
+    setTimeout(typeWriter, 50);
     return;
   }
 
@@ -212,8 +124,12 @@ function typeWriter() {
     lineIndex = (lineIndex + 1) % loveLines.length;
     typeText.textContent = "";
     typeWriter();
-  }, 1600);
+  }, 1400);
 }
+
+surpriseButton.addEventListener("click", () => {
+  megaSurprise();
+});
 
 document.addEventListener("click", (e) => {
   if (mainContent.classList.contains("locked")) return;
@@ -245,7 +161,7 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 function burstConfetti(originX = canvas.width / 2, originY = canvas.height * 0.34, amount = 130) {
-  const colors = ["#3d6e58", "#93c88f", "#f0c05c", "#f2a97e", "#dc7f95"];
+  const colors = ["#2d6a4f", "#95d5b2", "#e9c46a", "#f4a261", "#e76f51"];
   for (let i = 0; i < amount; i++) {
     pieces.push({
       x: originX,
@@ -264,10 +180,10 @@ function shakeScreen(duration = 700) {
   setTimeout(() => document.body.classList.remove("screen-shake"), duration);
 }
 
-function showRoarBanner(text = "RAWR !!!") {
+function showRoarBanner() {
   const banner = document.createElement("div");
   banner.className = "roar-banner";
-  banner.textContent = text;
+  banner.textContent = "RAWR !!!";
   document.body.appendChild(banner);
   setTimeout(() => banner.remove(), 1300);
 }
@@ -335,6 +251,83 @@ function playCuteRoar() {
   chirp.stop(now + 0.8);
 }
 
+let sharedAudioContext = null;
+
+function getSharedAudioContext() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+
+  if (!sharedAudioContext || sharedAudioContext.state === "closed") {
+    sharedAudioContext = new AudioCtx();
+  }
+
+  if (sharedAudioContext.state === "suspended") {
+    sharedAudioContext.resume().catch(() => {});
+  }
+
+  return sharedAudioContext;
+}
+
+function playJumpSfx() {
+  const audioContext = getSharedAudioContext();
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+  const gain = audioContext.createGain();
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.08, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+  gain.connect(audioContext.destination);
+
+  const chirp = audioContext.createOscillator();
+  chirp.type = "triangle";
+  chirp.frequency.setValueAtTime(480, now);
+  chirp.frequency.exponentialRampToValueAtTime(760, now + 0.11);
+  chirp.frequency.exponentialRampToValueAtTime(620, now + 0.28);
+  chirp.connect(gain);
+  chirp.start(now);
+
+  const sparkle = audioContext.createOscillator();
+  sparkle.type = "sine";
+  sparkle.frequency.setValueAtTime(880, now + 0.04);
+  sparkle.frequency.exponentialRampToValueAtTime(1180, now + 0.16);
+  sparkle.connect(gain);
+  sparkle.start(now + 0.03);
+
+  chirp.stop(now + 0.28);
+  sparkle.stop(now + 0.18);
+}
+
+function playCrashSfx() {
+  const audioContext = getSharedAudioContext();
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+  const gain = audioContext.createGain();
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.07, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+  gain.connect(audioContext.destination);
+
+  const bonk = audioContext.createOscillator();
+  bonk.type = "triangle";
+  bonk.frequency.setValueAtTime(260, now);
+  bonk.frequency.exponentialRampToValueAtTime(160, now + 0.14);
+  bonk.frequency.exponentialRampToValueAtTime(110, now + 0.38);
+  bonk.connect(gain);
+  bonk.start(now);
+
+  const wobble = audioContext.createOscillator();
+  wobble.type = "sine";
+  wobble.frequency.setValueAtTime(180, now + 0.04);
+  wobble.frequency.exponentialRampToValueAtTime(120, now + 0.3);
+  wobble.connect(gain);
+  wobble.start(now + 0.03);
+
+  bonk.stop(now + 0.38);
+  wobble.stop(now + 0.32);
+}
+
 function drawConfetti() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -354,8 +347,8 @@ function drawConfetti() {
 
 function unlockSite() {
   if (!gameWon) {
-    dinoMessage.textContent = `You must score ${TARGET_SCORE} first before entering ${DINO_WORLD} World.`;
-    window.alert(`Clear the game first. Reach score ${TARGET_SCORE} to unlock ${DINO_WORLD} World.`);
+    dinoMessage.textContent = `You must score ${TARGET_SCORE} first before entering \u{1F996} World.`;
+    window.alert(`Clear the game first. Reach score ${TARGET_SCORE} to unlock \u{1F996} World.`);
     return;
   }
 
@@ -405,6 +398,7 @@ function stopPreviewSong() {
     // Ignore cross-frame access issues.
   }
 
+  // Ensure embedded page is unloaded so mission audio cannot keep playing.
   repoPreviewFrame.src = "about:blank";
 }
 
@@ -414,16 +408,12 @@ async function enterBirthdayWorld() {
   dinoGate.classList.add("hidden");
   codeGate.classList.add("hidden");
   mainContent.classList.remove("locked");
-  mainContent.classList.add("revealed");
   mainContent.setAttribute("aria-hidden", "false");
   gate.setAttribute("aria-hidden", "true");
   dinoGate.setAttribute("aria-hidden", "true");
   codeGate.setAttribute("aria-hidden", "true");
   gateError.textContent = "";
   gatePassword.value = "";
-  burstConfetti(canvas.width * 0.5, canvas.height * 0.22, 140);
-  spawnEggs(16, window.innerWidth / 2, window.innerHeight * 0.74, 180, 1200);
-  showRoarBanner("Birthday World");
   await playBirthdaySong();
 }
 
@@ -480,139 +470,14 @@ let gameScore = 0;
 let lastFrame = 0;
 let spawnTimer = 0;
 let speed = 2.4;
+let crashSfxPlayed = false;
+let lastLandingAt = 0;
+let gameClock = 0;
 
 const gravity = 0.6;
 const jumpPower = -10.8;
 const groundY = dinoCanvas.height - 34;
-const dinoHitbox = { left: 6, right: 6, top: 5, bottom: 4 };
-let crashSfxPlayed = false;
-let sharedAudioContext = null;
-
-function setBirthdaySongUi(state) {
-  if (!songButton || !songStatus) return;
-
-  if (state === "playing") {
-    songButton.textContent = "Pause Birthday Song";
-    songStatus.textContent = "Soundtrack glowing";
-    return;
-  }
-
-  if (state === "waiting") {
-    songButton.textContent = "Tap Again to Play";
-    songStatus.textContent = "Soundtrack waiting";
-    return;
-  }
-
-  if (state === "paused") {
-    songButton.textContent = "Play Birthday Song";
-    songStatus.textContent = "Soundtrack paused";
-    return;
-  }
-
-  songButton.textContent = "Play Birthday Song";
-  songStatus.textContent = "Soundtrack ready";
-}
-
-async function playBirthdaySong() {
-  if (!song) return false;
-
-  try {
-    await song.play();
-    setBirthdaySongUi("playing");
-    return true;
-  } catch {
-    setBirthdaySongUi("waiting");
-    return false;
-  }
-}
-
-function getSharedAudioContext() {
-  const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  if (!AudioCtx) return null;
-
-  if (!sharedAudioContext || sharedAudioContext.state === "closed") {
-    sharedAudioContext = new AudioCtx();
-  }
-
-  if (sharedAudioContext.state === "suspended") {
-    sharedAudioContext.resume().catch(() => {});
-  }
-
-  return sharedAudioContext;
-}
-
-function playJumpSfx() {
-  const audioContext = getSharedAudioContext();
-  if (!audioContext) return;
-
-  const now = audioContext.currentTime;
-  const gain = audioContext.createGain();
-  gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(0.06, now + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-  gain.connect(audioContext.destination);
-
-  const chirp = audioContext.createOscillator();
-  chirp.type = "triangle";
-  chirp.frequency.setValueAtTime(420, now);
-  chirp.frequency.exponentialRampToValueAtTime(760, now + 0.12);
-  chirp.frequency.exponentialRampToValueAtTime(620, now + 0.22);
-
-  const shimmer = audioContext.createOscillator();
-  shimmer.type = "sine";
-  shimmer.frequency.setValueAtTime(900, now + 0.03);
-  shimmer.frequency.exponentialRampToValueAtTime(1180, now + 0.16);
-
-  const shimmerGain = audioContext.createGain();
-  shimmerGain.gain.setValueAtTime(0.0001, now);
-  shimmerGain.gain.exponentialRampToValueAtTime(0.028, now + 0.05);
-  shimmerGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
-
-  chirp.connect(gain);
-  shimmer.connect(shimmerGain);
-  shimmerGain.connect(audioContext.destination);
-
-  chirp.start(now);
-  shimmer.start(now + 0.02);
-  chirp.stop(now + 0.24);
-  shimmer.stop(now + 0.19);
-}
-
-function playCrashSfx() {
-  const audioContext = getSharedAudioContext();
-  if (!audioContext) return;
-
-  const now = audioContext.currentTime;
-  const gain = audioContext.createGain();
-  gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(0.09, now + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.34);
-  gain.connect(audioContext.destination);
-
-  const bonk = audioContext.createOscillator();
-  bonk.type = "square";
-  bonk.frequency.setValueAtTime(210, now);
-  bonk.frequency.exponentialRampToValueAtTime(118, now + 0.18);
-
-  const wobble = audioContext.createOscillator();
-  wobble.type = "triangle";
-  wobble.frequency.setValueAtTime(132, now);
-  wobble.frequency.exponentialRampToValueAtTime(78, now + 0.28);
-
-  const wobbleGain = audioContext.createGain();
-  wobbleGain.gain.setValueAtTime(0.0001, now);
-  wobbleGain.gain.exponentialRampToValueAtTime(0.045, now + 0.03);
-  wobbleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
-
-  bonk.connect(gain);
-  wobble.connect(wobbleGain);
-  wobbleGain.connect(audioContext.destination);
-
-  bonk.start(now);
-  wobble.start(now + 0.01);
-  bonk.stop(now + 0.24);
-  wobble.stop(now + 0.34);
-}
+const dinoHitbox = { left: 7, right: 7, top: 8, bottom: 4 };
 
 function resetDinoGame() {
   obstacles.length = 0;
@@ -622,10 +487,12 @@ function resetDinoGame() {
   gameOver = false;
   gameWon = false;
   crashSfxPlayed = false;
+  lastLandingAt = 0;
+  gameClock = 0;
   dino.y = groundY - dino.height;
   dino.vy = 0;
   dinoScore.textContent = `Score: ${gameScore} / ${TARGET_SCORE}`;
-  dinoMessage.textContent = "Press Space or tap the game to help our birthday dino hop.";
+  dinoMessage.textContent = "Press Space or tap the game to help her hop.";
   dinoContinueButton.classList.add("hidden");
   drawGame();
 }
@@ -643,7 +510,7 @@ function adminSkipDinoGame() {
   gameOver = false;
   gameScore = TARGET_SCORE;
   dinoScore.textContent = `Score: ${TARGET_SCORE} / ${TARGET_SCORE}`;
-  dinoMessage.textContent = "Admin bypass enabled. Our mascot is already ready for the next chapter.";
+  dinoMessage.textContent = "Admin bypass enabled. Princess dino is ready for the next chapter.";
   dinoContinueButton.classList.remove("hidden");
   unlockSite();
 }
@@ -670,20 +537,24 @@ function spawnObstacle() {
 }
 
 function checkCollision(obs) {
-  const { left, right, top, bottom } = dinoHitbox;
   return (
-    dino.x + left < obs.x + obs.width &&
-    dino.x + dino.width - right > obs.x &&
-    dino.y + top < obs.y + obs.height &&
-    dino.y + dino.height - bottom > obs.y
+    dino.x + dinoHitbox.left < obs.x + obs.width - 4 &&
+    dino.x + dino.width - dinoHitbox.right > obs.x + 4 &&
+    dino.y + dinoHitbox.top < obs.y + obs.height - 4 &&
+    dino.y + dino.height - dinoHitbox.bottom > obs.y + 4
   );
 }
 
 function updateGame(delta) {
+  gameClock += delta;
+  const wasAirborne = dino.y < groundY - dino.height - 0.1;
   dino.vy += gravity;
   dino.y += dino.vy;
   if (dino.y > groundY - dino.height) {
     dino.y = groundY - dino.height;
+    if (wasAirborne) {
+      lastLandingAt = gameClock;
+    }
     dino.vy = 0;
   }
 
@@ -703,7 +574,7 @@ function updateGame(delta) {
       if (gameScore >= TARGET_SCORE) {
         gameWon = true;
         gameRunning = false;
-        dinoMessage.textContent = `She made all 23 jumps. Click Enter ${DINO_WORLD} World to continue.`;
+        dinoMessage.textContent = "She made all 23 hops. Click Enter \u{1F996} World to continue.";
         dinoContinueButton.classList.remove("hidden");
         dinoContinueButton.focus();
       }
@@ -721,199 +592,217 @@ function updateGame(delta) {
       crashSfxPlayed = true;
       playCrashSfx();
     }
-    dinoMessage.textContent = "Almost there. Press Restart Game and help her try again.";
+    dinoMessage.textContent = "Almost. Press Restart Game and help the princess dino try again.";
   }
 }
 
-function drawGround() {
+function drawGame() {
+  dinoCtx.clearRect(0, 0, dinoCanvas.width, dinoCanvas.height);
+
   dinoCtx.strokeStyle = "#355f4a";
   dinoCtx.lineWidth = 2;
   dinoCtx.beginPath();
   dinoCtx.moveTo(0, groundY + 1);
   dinoCtx.lineTo(dinoCanvas.width, groundY + 1);
   dinoCtx.stroke();
-}
 
-function drawObstacle(obs) {
+  drawPrincessDino();
+
   dinoCtx.fillStyle = "#4e8a6a";
-  dinoCtx.fillRect(obs.x, obs.y, obs.width, obs.height);
+  obstacles.forEach((obs) => {
+    dinoCtx.fillRect(obs.x, obs.y, obs.width, obs.height);
+  });
 }
 
-function drawDinoShadow(time) {
-  const bob = Math.sin(time / 240) * 0.8;
-  const airborneLift = Math.max(0, groundY - dino.height - dino.y);
-  const shadowScale = Math.max(0.62, 1 - airborneLift / 90);
-  dinoCtx.fillStyle = "rgba(22, 46, 33, 0.16)";
+function getDinoAnimationState() {
+  const airborne = dino.y < groundY - dino.height - 0.1;
+  const idleBob = airborne ? 0 : Math.sin(gameClock / 150) * 1.2;
+  const landingBounce = Math.max(0, 1 - (gameClock - lastLandingAt) / 160);
+  const tilt = airborne ? Math.max(-0.18, Math.min(0.2, dino.vy / 28)) : Math.sin(gameClock / 210) * 0.02;
+  const squashY = airborne ? 0.92 : 1 + landingBounce * 0.08;
+  const squashX = airborne ? 1.06 : 1 - landingBounce * 0.05;
+  const skirtBounce = airborne ? Math.min(2.4, Math.abs(dino.vy) * 0.18) : idleBob * 0.35;
+  const crownBounce = airborne ? -Math.min(1.8, Math.abs(dino.vy) * 0.12) : -landingBounce * 1.2;
+
+  return { airborne, idleBob, landingBounce, tilt, squashX, squashY, skirtBounce, crownBounce };
+}
+
+function drawPrincessDino() {
+  const bodyX = dino.x;
+  const bodyY = dino.y;
+  const bodyW = dino.width;
+  const bodyH = dino.height;
+  const state = getDinoAnimationState();
+
+  dinoCtx.save();
+  dinoCtx.translate(bodyX + bodyW * 0.52, bodyY + bodyH * 0.27 + state.idleBob);
+  dinoCtx.rotate(state.tilt);
+  dinoCtx.scale(state.squashX, state.squashY);
+
+  drawDinoTail(bodyW, bodyH);
+  drawDinoBody(bodyW, bodyH);
+  drawDinoBackSpikes(bodyW, bodyH);
+  drawDinoSkirt(bodyW, bodyH, state.skirtBounce);
+  drawDinoArms(bodyW, bodyH);
+  drawDinoLegs(bodyW, bodyH, state.airborne);
+  drawDinoFace(bodyW, bodyH);
+  drawDinoCrown(bodyW, bodyH, state.crownBounce);
+
+  dinoCtx.restore();
+}
+
+function drawDinoBody(bodyW, bodyH) {
+  dinoCtx.fillStyle = "#59ba79";
   dinoCtx.beginPath();
-  dinoCtx.ellipse(
-    dino.x + dino.width * 0.5,
-    groundY + 3 - bob * 0.2,
-    dino.width * 0.42 * shadowScale,
-    3.2 * shadowScale,
-    0,
-    0,
-    Math.PI * 2
-  );
+  dinoCtx.ellipse(0, bodyH * 0.26, bodyW * 0.19, bodyH * 0.22, 0, 0, Math.PI * 2);
+  dinoCtx.fill();
+
+  dinoCtx.beginPath();
+  dinoCtx.ellipse(bodyW * 0.06, -bodyH * 0.22, bodyW * 0.68, bodyH * 0.58, -0.1, 0, Math.PI * 2);
+  dinoCtx.fill();
+
+  dinoCtx.fillStyle = "#8fdfab";
+  dinoCtx.beginPath();
+  dinoCtx.ellipse(bodyW * 0.02, bodyH * 0.2, bodyW * 0.1, bodyH * 0.14, -0.04, 0, Math.PI * 2);
   dinoCtx.fill();
 }
 
 function drawDinoTail(bodyW, bodyH) {
-  dinoCtx.fillStyle = "#4d9d6a";
+  dinoCtx.fillStyle = "#4ba06a";
   dinoCtx.beginPath();
-  dinoCtx.moveTo(-bodyW * 0.16, bodyH * 0.06);
-  dinoCtx.lineTo(-bodyW * 0.6, -bodyH * 0.05);
-  dinoCtx.lineTo(-bodyW * 0.26, -bodyH * 0.22);
+  dinoCtx.moveTo(-bodyW * 0.16, bodyH * 0.28);
+  dinoCtx.quadraticCurveTo(-bodyW * 0.46, bodyH * 0.24, -bodyW * 0.44, bodyH * 0.02);
+  dinoCtx.quadraticCurveTo(-bodyW * 0.12, bodyH * 0.14, -bodyW * 0.04, bodyH * 0.22);
   dinoCtx.closePath();
   dinoCtx.fill();
 }
 
-function drawDinoLegs(bodyW, bodyH) {
-  dinoCtx.fillStyle = "#4d9d6a";
-  dinoCtx.beginPath();
-  dinoCtx.roundRect(-bodyW * 0.12, bodyH * 0.22, bodyW * 0.18, bodyH * 0.2, 3);
-  dinoCtx.roundRect(bodyW * 0.12, bodyH * 0.22, bodyW * 0.18, bodyH * 0.2, 3);
-  dinoCtx.fill();
-}
-
-function drawDinoBody(bodyW, bodyH) {
-  dinoCtx.fillStyle = "#62bd7b";
-  dinoCtx.beginPath();
-  dinoCtx.ellipse(0, bodyH * 0.02, bodyW * 0.42, bodyH * 0.36, -0.08, 0, Math.PI * 2);
-  dinoCtx.fill();
-
-  dinoCtx.fillStyle = "#8bd09c";
-  dinoCtx.beginPath();
-  dinoCtx.ellipse(bodyW * 0.16, bodyH * 0.02, bodyW * 0.23, bodyH * 0.24, -0.08, 0, Math.PI * 2);
-  dinoCtx.fill();
-
-  dinoCtx.fillStyle = "#70ca8a";
-  dinoCtx.beginPath();
-  dinoCtx.ellipse(bodyW * 0.24, -bodyH * 0.24, bodyW * 0.27, bodyH * 0.24, -0.08, 0, Math.PI * 2);
-  dinoCtx.fill();
-}
-
-function drawDinoHair(bodyW, bodyH) {
-  dinoCtx.fillStyle = "#5b423e";
-  dinoCtx.beginPath();
-  dinoCtx.ellipse(bodyW * 0.12, -bodyH * 0.24, bodyW * 0.16, bodyH * 0.16, 0.1, 0, Math.PI * 2);
-  dinoCtx.ellipse(bodyW * 0.01, -bodyH * 0.14, bodyW * 0.15, bodyH * 0.2, -0.2, 0, Math.PI * 2);
-  dinoCtx.fill();
-}
-
-function drawDinoHat(bodyW, bodyH) {
-  dinoCtx.fillStyle = "#efb346";
-  dinoCtx.beginPath();
-  dinoCtx.ellipse(bodyW * 0.16, -bodyH * 0.38, bodyW * 0.28, bodyH * 0.18, -0.1, Math.PI, 0, false);
-  dinoCtx.fill();
-
-  dinoCtx.fillStyle = "#db9439";
-  dinoCtx.beginPath();
-  dinoCtx.ellipse(bodyW * 0.22, -bodyH * 0.29, bodyW * 0.23, bodyH * 0.08, -0.1, 0, Math.PI * 2);
-  dinoCtx.fill();
-
-  dinoCtx.fillStyle = "#fff8ed";
-  dinoCtx.beginPath();
-  dinoCtx.arc(bodyW * 0.18, -bodyH * 0.39, bodyW * 0.1, 0, Math.PI * 2);
-  dinoCtx.fill();
-
-  dinoCtx.strokeStyle = "#d94437";
-  dinoCtx.lineWidth = 1.5;
-  dinoCtx.lineCap = "round";
-  dinoCtx.beginPath();
-  dinoCtx.moveTo(bodyW * 0.11, -bodyH * 0.37);
-  dinoCtx.lineTo(bodyW * 0.15, -bodyH * 0.43);
-  dinoCtx.lineTo(bodyW * 0.18, -bodyH * 0.39);
-  dinoCtx.lineTo(bodyW * 0.21, -bodyH * 0.43);
-  dinoCtx.lineTo(bodyW * 0.25, -bodyH * 0.37);
-  dinoCtx.stroke();
-}
-
-function drawDinoFace(bodyW, bodyH, time) {
-  const blinkWindow = time % 3200;
-  const isBlinking = blinkWindow > 2660 && blinkWindow < 2860;
-  const blushPulse = 1 + Math.sin(time / 260) * 0.08;
-
-  dinoCtx.fillStyle = "#ffb0a1";
-  dinoCtx.beginPath();
-  dinoCtx.ellipse(
-    bodyW * 0.18,
-    -bodyH * 0.18,
-    bodyW * 0.08 * blushPulse,
-    bodyH * 0.05 * blushPulse,
-    0,
-    0,
-    Math.PI * 2
-  );
-  dinoCtx.fill();
-
-  dinoCtx.strokeStyle = "#2a332f";
-  dinoCtx.lineWidth = 1.2;
-  dinoCtx.lineCap = "round";
-  dinoCtx.beginPath();
-  if (isBlinking) {
-    dinoCtx.moveTo(bodyW * 0.24, -bodyH * 0.26);
-    dinoCtx.lineTo(bodyW * 0.34, -bodyH * 0.26);
-  } else {
-    dinoCtx.ellipse(bodyW * 0.29, -bodyH * 0.26, bodyW * 0.045, bodyH * 0.04, 0, Math.PI * 0.1, Math.PI * 0.9);
+function drawDinoBackSpikes(bodyW, bodyH) {
+  dinoCtx.strokeStyle = "#ffffff";
+  dinoCtx.lineWidth = 2;
+  for (let i = 0; i < 4; i += 1) {
+    const x = -bodyW * 0.08 - i * bodyW * 0.08;
+    const y = -bodyH * 0.3 + i * bodyH * 0.09;
+    dinoCtx.beginPath();
+    dinoCtx.arc(x, y, bodyW * 0.055, Math.PI * 0.12, Math.PI * 1.2);
+    dinoCtx.stroke();
   }
-  dinoCtx.stroke();
+}
 
-  dinoCtx.fillStyle = "#2a332f";
+function drawDinoSkirt(bodyW, bodyH, skirtBounce) {
+  const bellyY = bodyH * 0.27 + skirtBounce * 0.4;
+  dinoCtx.fillStyle = "rgba(255, 255, 255, 0.18)";
   dinoCtx.beginPath();
-  dinoCtx.arc(bodyW * 0.42, -bodyH * 0.18, bodyW * 0.025, 0, Math.PI * 2);
+  dinoCtx.ellipse(bodyW * 0.02, bellyY, bodyW * 0.1, bodyH * 0.1, 0, 0, Math.PI * 2);
   dinoCtx.fill();
+}
 
-  dinoCtx.strokeStyle = "#6a564d";
-  dinoCtx.lineWidth = 1;
+function drawDinoArms(bodyW, bodyH) {
+  dinoCtx.strokeStyle = "#59ba79";
+  dinoCtx.lineCap = "round";
+  dinoCtx.lineWidth = bodyW * 0.11;
+
   dinoCtx.beginPath();
-  dinoCtx.moveTo(bodyW * 0.3, -bodyH * 0.1);
-  dinoCtx.quadraticCurveTo(bodyW * 0.35, -bodyH * 0.04, bodyW * 0.42, -bodyH * 0.09);
+  dinoCtx.moveTo(bodyW * 0.16, bodyH * 0.2);
+  dinoCtx.quadraticCurveTo(bodyW * 0.32, bodyH * 0.16, bodyW * 0.26, bodyH * 0.3);
   dinoCtx.stroke();
 }
 
-function drawCuteDino(time) {
-  const onGround = dino.y >= groundY - dino.height - 0.1;
-  const bob = onGround ? Math.sin(time / 240) * 0.8 : 0;
-  let scaleX = 1;
-  let scaleY = 1;
+function drawDinoLegs(bodyW, bodyH, airborne) {
+  dinoCtx.strokeStyle = "#4ba06a";
+  dinoCtx.lineCap = "round";
+  dinoCtx.lineWidth = bodyW * 0.1;
+  const legLift = airborne ? -bodyH * 0.04 : 0;
 
-  if (!onGround) {
-    if (dino.vy < 0) {
-      scaleX = 0.96;
-      scaleY = 1.06;
-    } else {
-      scaleX = 1.05;
-      scaleY = 0.95;
-    }
-  } else if (gameRunning) {
-    scaleX = 1.01;
-    scaleY = 0.99;
-  }
+  dinoCtx.beginPath();
+  dinoCtx.moveTo(-bodyW * 0.03, bodyH * 0.46);
+  dinoCtx.lineTo(-bodyW * 0.04, bodyH * 0.74 + legLift);
+  dinoCtx.stroke();
 
-  const bodyW = dino.width;
-  const bodyH = dino.height;
-  const centerX = dino.x + bodyW * 0.5;
-  const centerY = dino.y + bodyH * 0.5 + bob;
+  dinoCtx.beginPath();
+  dinoCtx.moveTo(bodyW * 0.07, bodyH * 0.44);
+  dinoCtx.lineTo(bodyW * 0.08, bodyH * 0.72 + legLift * 0.6);
+  dinoCtx.stroke();
+}
 
-  drawDinoShadow(time);
+function drawDinoFace(bodyW, bodyH) {
+  const faceX = bodyW * 0.08;
+  const faceY = -bodyH * 0.25;
+  const faceR = bodyW * 0.5;
+
+  dinoCtx.fillStyle = "#ffe9f1";
+  dinoCtx.beginPath();
+  dinoCtx.arc(faceX, faceY, faceR + 5, 0, Math.PI * 2);
+  dinoCtx.fill();
 
   dinoCtx.save();
-  dinoCtx.translate(centerX, centerY);
-  dinoCtx.scale(scaleX, scaleY);
-  drawDinoTail(bodyW, bodyH);
-  drawDinoLegs(bodyW, bodyH);
-  drawDinoBody(bodyW, bodyH);
-  drawDinoHair(bodyW, bodyH);
-  drawDinoHat(bodyW, bodyH);
-  drawDinoFace(bodyW, bodyH, time);
+  dinoCtx.beginPath();
+  dinoCtx.arc(faceX, faceY, faceR, 0, Math.PI * 2);
+  dinoCtx.clip();
+
+  if (dinoAvatar.complete && dinoAvatar.naturalWidth > 0) {
+    dinoCtx.drawImage(dinoAvatar, faceX - faceR, faceY - faceR, faceR * 2, faceR * 2);
+  } else {
+    dinoCtx.fillStyle = "#fff5f8";
+    dinoCtx.fillRect(faceX - faceR, faceY - faceR, faceR * 2, faceR * 2);
+
+    dinoCtx.strokeStyle = "#6e1d43";
+    dinoCtx.lineWidth = 1.4;
+    dinoCtx.lineCap = "round";
+
+    dinoCtx.beginPath();
+    dinoCtx.arc(faceX - faceR * 0.1, faceY - faceR * 0.05, faceR * 0.24, Math.PI * 0.15, Math.PI * 0.92);
+    dinoCtx.stroke();
+
+    dinoCtx.beginPath();
+    dinoCtx.moveTo(faceX - faceR * 0.15, faceY + faceR * 0.32);
+    dinoCtx.quadraticCurveTo(faceX + faceR * 0.12, faceY + faceR * 0.5, faceX + faceR * 0.34, faceY + faceR * 0.2);
+    dinoCtx.stroke();
+  }
+
   dinoCtx.restore();
+
+  dinoCtx.strokeStyle = "#ffffff";
+  dinoCtx.lineWidth = 2;
+  dinoCtx.beginPath();
+  dinoCtx.arc(faceX, faceY, faceR + 0.5, 0, Math.PI * 2);
+  dinoCtx.stroke();
+
+  dinoCtx.strokeStyle = "#c84584";
+  dinoCtx.lineWidth = 1;
+  dinoCtx.beginPath();
+  dinoCtx.arc(faceX, faceY, faceR + 5, 0, Math.PI * 2);
+  dinoCtx.stroke();
+
+  dinoCtx.fillStyle = "#ff9dc6";
+  dinoCtx.beginPath();
+  dinoCtx.arc(faceX - faceR * 0.86, faceY + faceR * 0.62, bodyW * 0.05, 0, Math.PI * 2);
+  dinoCtx.fill();
 }
 
-function drawGame() {
-  dinoCtx.clearRect(0, 0, dinoCanvas.width, dinoCanvas.height);
-  drawGround();
-  drawCuteDino(lastFrame || 0);
-  obstacles.forEach(drawObstacle);
+function drawDinoCrown(bodyW, bodyH, crownBounce) {
+  const crownY = -bodyH * 1.16 + crownBounce;
+
+  dinoCtx.fillStyle = "#f2c64d";
+  dinoCtx.beginPath();
+  dinoCtx.moveTo(-bodyW * 0.02, crownY + bodyH * 0.05);
+  dinoCtx.lineTo(bodyW * 0.04, crownY - bodyH * 0.11);
+  dinoCtx.lineTo(bodyW * 0.12, crownY + bodyH * 0.01);
+  dinoCtx.lineTo(bodyW * 0.2, crownY - bodyH * 0.14);
+  dinoCtx.lineTo(bodyW * 0.27, crownY + bodyH * 0.03);
+  dinoCtx.lineTo(bodyW * 0.33, crownY - bodyH * 0.09);
+  dinoCtx.lineTo(bodyW * 0.4, crownY + bodyH * 0.06);
+  dinoCtx.lineTo(-bodyW * 0.01, crownY + bodyH * 0.06);
+  dinoCtx.closePath();
+  dinoCtx.fill();
+
+  dinoCtx.fillStyle = "#d7941d";
+  dinoCtx.fillRect(bodyW * 0.01, crownY + bodyH * 0.04, bodyW * 0.34, bodyH * 0.05);
+
+  dinoCtx.fillStyle = "#fff8d6";
+  dinoCtx.beginPath();
+  dinoCtx.arc(bodyW * 0.2, crownY - bodyH * 0.03, bodyW * 0.05, 0, Math.PI * 2);
+  dinoCtx.fill();
 }
 
 function gameLoop(ts) {
@@ -952,7 +841,6 @@ window.addEventListener("message", (event) => {
     lockCodeGateContinue();
   }
 });
-
 dinoCanvas.addEventListener("pointerdown", jumpDino);
 document.addEventListener("keydown", (e) => {
   if (dinoGate.classList.contains("hidden")) return;
@@ -968,4 +856,6 @@ requestAnimationFrame(gameLoop);
 
 drawConfetti();
 typeWriter();
-setTimeout(() => burstConfetti(canvas.width * 0.5, canvas.height * 0.22, 70), 500);
+setTimeout(burstConfetti, 500);
+
+
