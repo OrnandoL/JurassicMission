@@ -27,6 +27,10 @@ body {
   overflow-x: hidden;
 }
 
+body.gate-flow-locked {
+  overflow: hidden;
+}
+
 body::before,
 body::after {
   content: "";

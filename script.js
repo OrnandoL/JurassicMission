@@ -44,6 +44,7 @@ const missionProgressFill = document.getElementById("missionProgressFill");
 const missionProgressText = document.getElementById("missionProgressText");
 const repoPreviewFrame = document.querySelector(".repo-preview-frame");
 const codeMissionSong = document.getElementById("codeMissionSong");
+const heroHeading = document.querySelector(".hero h1");
 const dinoAvatar = new Image();
 dinoAvatar.src = "assets/images/photo2.jpg";
 
@@ -52,6 +53,7 @@ const TARGET_SCORE = 23;
 const isAdminMode = new URLSearchParams(window.location.search).get("admin") === "1";
 
 mainContent.classList.add("locked");
+document.body.classList.add("gate-flow-locked");
 gatePassword.focus();
 
 photoFiles.forEach((src, i) => {
@@ -416,11 +418,24 @@ function stopPreviewSong() {
   repoPreviewFrame.src = "about:blank";
 }
 
+function resetBirthdayMissionView() {
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  if (heroHeading) {
+    heroHeading.setAttribute("tabindex", "-1");
+    heroHeading.focus({ preventScroll: true });
+  } else {
+    mainContent.setAttribute("tabindex", "-1");
+    mainContent.focus({ preventScroll: true });
+  }
+}
 async function enterBirthdayWorld() {
   stopPreviewSong();
   gate.classList.add("hidden");
   dinoGate.classList.add("hidden");
   codeGate.classList.add("hidden");
+  document.body.classList.remove("gate-flow-locked");
   mainContent.classList.remove("locked");
   mainContent.setAttribute("aria-hidden", "false");
   gate.setAttribute("aria-hidden", "true");
@@ -428,6 +443,7 @@ async function enterBirthdayWorld() {
   codeGate.setAttribute("aria-hidden", "true");
   gateError.textContent = "";
   gatePassword.value = "";
+  resetBirthdayMissionView();
   await playBirthdaySong();
 }
 
@@ -871,6 +887,7 @@ requestAnimationFrame(gameLoop);
 drawConfetti();
 typeWriter();
 setTimeout(burstConfetti, 500);
+
 
 
 
