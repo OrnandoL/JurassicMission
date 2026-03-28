@@ -469,6 +469,31 @@ h1 {
   display: block;
 }
 
+
+.video-wrap {
+  margin-top: 22px;
+  background: color-mix(in srgb, var(--card) 88%, white);
+  border: 2px solid rgba(45, 106, 79, 0.22);
+  border-radius: 20px;
+  padding: 22px 18px;
+  box-shadow: 0 10px 30px rgba(20, 65, 44, 0.17);
+}
+
+.video-frame {
+  max-width: 820px;
+  margin: 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #173425;
+  box-shadow: 0 10px 24px rgba(20, 65, 44, 0.18);
+}
+
+.memory-video {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  background: #10261b;
+}
 .finale-wrap {
   margin-top: 22px;
 }
@@ -644,7 +669,8 @@ body.screen-shake main {
 
   .hero,
   .story-wrap,
-  .gallery-wrap {
+  .gallery-wrap,
+  .video-wrap {
     border-radius: 16px;
   }
 
@@ -688,6 +714,7 @@ body.screen-shake main {
   .hero,
   .story-wrap,
   .gallery-wrap,
+  .video-wrap,
   .finale-card {
     padding: 18px 14px;
   }
@@ -723,3 +750,4 @@ body.screen-shake main {
     padding: 9px 12px;
   }
 }
+
