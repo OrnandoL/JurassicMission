@@ -7,7 +7,8 @@ const photoFiles = [
   "assets/images/photo6.jpg",
   "assets/images/photo7.jpg",
   "assets/images/photo8.jpg",
-  "assets/images/photo9.jpg"
+  "assets/images/photo9.jpg",
+  "assets/images/photo10.jpeg"
 ];
 
 const loveLines = [
@@ -870,6 +871,8 @@ requestAnimationFrame(gameLoop);
 drawConfetti();
 typeWriter();
 setTimeout(burstConfetti, 500);
+
+
 
 
 

@@ -479,9 +479,13 @@ h1 {
   box-shadow: 0 10px 30px rgba(20, 65, 44, 0.17);
 }
 
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
 .video-frame {
-  max-width: 820px;
-  margin: 0 auto;
   border-radius: 18px;
   overflow: hidden;
   background: #173425;
@@ -750,4 +754,5 @@ body.screen-shake main {
     padding: 9px 12px;
   }
 }
+
 
