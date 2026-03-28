@@ -682,8 +682,34 @@ body.screen-shake main {
     grid-template-columns: 1fr;
   }
 
+  .gallery {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .gallery-lead {
+    max-width: 32ch;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+
+  .memory-themes {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .memory-themes span {
+    padding: 7px 10px;
+    font-size: 0.78rem;
+  }
+
+  .photo-card {
+    width: 100%;
+  }
+
   .photo-card img {
-    height: 190px;
+    height: 280px;
   }
 
   .game-card {
@@ -754,5 +780,6 @@ body.screen-shake main {
     padding: 9px 12px;
   }
 }
+
 
 
